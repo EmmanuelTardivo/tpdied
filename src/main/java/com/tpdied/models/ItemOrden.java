@@ -1,5 +1,7 @@
 package com.tpdied.models;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -9,7 +11,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "Item_orden")
-public class ItemOrden {
+public class ItemOrden implements Serializable {
     
     @Id
     @ManyToOne
