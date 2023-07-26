@@ -75,8 +75,8 @@ public class Ruta {
         return duracionViaje;
     }
 
-    public void setDuracionViaje(LocalTime duracionViaje) {
-        this.duracionViaje = duracionViaje;
+    public void setDuracionViaje(String duracionViaje) {
+        this.duracionViaje = LocalTime.parse(duracionViaje);
     }
 
     public Boolean getEstado() {

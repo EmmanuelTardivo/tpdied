@@ -1,8 +1,12 @@
 package com.tpdied.models;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -13,6 +17,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.Table;
 
 @Entity
@@ -35,8 +40,18 @@ public class OrdenProvision {
     private Integer limiteHoras;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado_orden")
+    @Column(name = "estado_orden", columnDefinition = "VARCHAR(15) CHECK (estado_orden IN ('PENDIENTE', 'EN_PROCESO', 'COMPLETADO'))")
     private EstadoOrden estado;
+
+    @ElementCollection
+    @CollectionTable(
+        name = "item_orden",
+        joinColumns = @JoinColumn(name = "id_orden"),
+        foreignKey = @ForeignKey(name = "ITEM_ORDEN_FK")
+    )
+    @MapKeyJoinColumn(name = "id_producto", foreignKey = @ForeignKey(name = "ITEM_PRODUCTO_FK"))
+    @Column(name = "cantidad")
+    private Map<Producto, Integer> itemsProductoCantidad = new HashMap<>();
 
     public Integer getId() {
         return id;
@@ -50,8 +65,8 @@ public class OrdenProvision {
         return fechaOrden;
     }
 
-    public void setFechaOrden(LocalDateTime fechaOrden) {
-        this.fechaOrden = fechaOrden;
+    public void setFechaOrden(String fechaOrden) {
+        this.fechaOrden = LocalDateTime.parse(fechaOrden);
     }
 
     public Sucursal getSucursalDestino() {
