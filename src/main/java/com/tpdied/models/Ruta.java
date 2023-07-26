@@ -4,6 +4,8 @@ import java.time.LocalTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,12 +22,12 @@ public class Ruta {
     @Column(name = "id_ruta")
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "id_origen")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_origen", foreignKey = @ForeignKey(name = "RUTA_ORIGEN_FK"))
     private Sucursal sucursalOrigen;
 
-    @ManyToOne
-    @JoinColumn(name = "id_destino")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_destino", foreignKey = @ForeignKey(name = "RUTA_DESTINO_FK"))
     private Sucursal sucursalDestino;
     
     @Column(name = "capacidad_en_kilos")

@@ -4,23 +4,26 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.ForeignKey;
+
 
 @Entity
 @Table(name = "Item_orden")
 public class ItemOrden implements Serializable {
     
     @Id
-    @ManyToOne
-    @JoinColumn(name = "id_orden")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_orden", foreignKey = @ForeignKey(name = "ITEM_ORDEN_FK"))
     private OrdenProvision orden;
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "id_producto")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_producto", foreignKey = @ForeignKey(name = "ITEM_PRODUCTO_FK"))
     private Producto producto;
     
     @Column(name = "cantidad")

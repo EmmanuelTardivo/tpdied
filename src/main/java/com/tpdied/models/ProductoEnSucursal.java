@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -14,13 +16,13 @@ import javax.persistence.Table;
 public class ProductoEnSucursal implements Serializable{
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "id_producto")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_producto", foreignKey = @ForeignKey(name = "PRODUCTO_SUCURSAL_FK"))
     private Producto producto;
 
     @Id
-    @ManyToOne
-    @JoinColumn(name = "id_sucursal")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_sucursal", foreignKey = @ForeignKey(name = "SUCURSAL_PRODUCTO_FK"))
     private Sucursal sucursal;
 
     @Column(name = "cantidad")

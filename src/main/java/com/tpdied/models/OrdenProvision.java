@@ -4,13 +4,16 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
 
 @Entity
 @Table(name = "orden_de_provision")
@@ -24,13 +27,14 @@ public class OrdenProvision {
     @Column(name = "fecha_de_orden")
     private LocalDateTime fechaOrden;
 
-    @ManyToOne
-    @JoinColumn(name = "id_destino")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_destino", foreignKey = @ForeignKey(name = "ORDEN_SUCURSAL_FK"))
     private Sucursal sucursalDestino;
 
     @Column(name = "limite_horas")
     private Integer limiteHoras;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "estado_orden")
     private EstadoOrden estado;
 
@@ -93,11 +97,6 @@ public class OrdenProvision {
         if (getClass() != obj.getClass())
             return false;
         OrdenProvision other = (OrdenProvision) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
         if (fechaOrden == null) {
             if (other.fechaOrden != null)
                 return false;
@@ -116,7 +115,4 @@ public class OrdenProvision {
         return "OrdenProvision [id=" + id + ", fechaOrden=" + fechaOrden + ", sucursalDestino=" + sucursalDestino.getNombre()
                 + ", limiteHoras=" + limiteHoras + ", estado=" + estado + "]";
     }
-
-    
-    
 }
