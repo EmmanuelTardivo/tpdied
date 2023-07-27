@@ -8,15 +8,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
+import com.tpdied.models.Eliminable;
 import com.tpdied.util.EntityManagerUtil;
 
-public abstract class AbstractDao<T> implements Dao<T> {
+public abstract class AbstractDao<T extends Eliminable> implements Dao<T> {
 
 	private EntityManager entityManager = EntityManagerUtil.getEntityManager();
 	private Class<T> clase;
 
 	@Override
-	public Optional<T> get(int id) {
+	public Optional<T> getById(int id) {
 		return Optional.ofNullable(entityManager.find(clase, id));
 	}
 
@@ -43,8 +44,9 @@ public abstract class AbstractDao<T> implements Dao<T> {
 
 	@Override
 	public void delete(T t) {
-		executeInsideTransaction(entityManager -> entityManager.remove(t));
-	}
+		t.setEliminado(true);
+        update(t);
+		}
 
 	public void setClase(Class<T> clase) {
 		this.clase = clase;

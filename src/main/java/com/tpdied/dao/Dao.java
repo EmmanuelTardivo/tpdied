@@ -3,9 +3,11 @@ package com.tpdied.dao;
 import java.util.List;
 import java.util.Optional;
 
-public interface Dao<T> {
+import com.tpdied.models.Eliminable;
 
-	Optional<T> get(int id);
+public interface Dao<T extends Eliminable> {
+
+	Optional<T> getById(int id);
 
 	List<T> getAll();
 

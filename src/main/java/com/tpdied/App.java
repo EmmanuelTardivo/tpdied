@@ -1,9 +1,12 @@
 package com.tpdied;
 
+import com.tpdied.controllers.SucursalController;
 import com.tpdied.dao.OrdenProvisionDao;
 import com.tpdied.dao.ProductoDao;
 import com.tpdied.dao.RutaDao;
 import com.tpdied.dao.SucursalDao;
+import com.tpdied.dto.SucursalDTO;
+import com.tpdied.mappers.SucursalMapper;
 import com.tpdied.models.Producto;
 import com.tpdied.models.Ruta;
 import com.tpdied.models.Sucursal;
@@ -11,7 +14,7 @@ import com.tpdied.models.Sucursal;
 public class App {
     public static void main(String[] args) {
        
-        SucursalDao sDao = new SucursalDao();
+        /* SucursalDao sDao = new SucursalDao();
         RutaDao rDao = new RutaDao();
         ProductoDao pDao = new ProductoDao();
         OrdenProvisionDao oDao = new OrdenProvisionDao();
@@ -61,7 +64,12 @@ public class App {
         s1.getListaProductoCantidadEnStock();
         s1.getCantidadProductoEnStock(p1);
 
-        sDao.update(s1);
-
+        sDao.update(s1); */
+        
+        SucursalController sc = new SucursalController();
+        System.out.println(sc.getEntityById(1));
+        System.out.println(sc.getAllEntities());
+        System.out.println(sc.getEntityById(3));
+        
     }
 }

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "producto")
-public class Producto {
+public class Producto implements Eliminable {
 
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -27,6 +27,9 @@ public class Producto {
     
     @Column(name = "peso_en_kilos")
     private Double peso;
+
+    @Column(name = "eliminado", columnDefinition = "BIT(1) DEFAULT 0")
+    private Boolean eliminado;
 
     public Integer getId() {
         return id;
@@ -97,6 +100,14 @@ public class Producto {
     public String toString() {
         return "Producto [id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", precio=" + precio
                 + ", peso=" + peso + "]";
+    }
+
+    public Boolean getEliminado() {
+        return eliminado;
+    }
+
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
     }
     
     

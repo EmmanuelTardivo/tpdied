@@ -22,7 +22,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "orden_de_provision")
-public class OrdenProvision {
+public class OrdenProvision implements Eliminable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +53,9 @@ public class OrdenProvision {
     @Column(name = "cantidad")
     private Map<Producto, Integer> itemsProductoCantidad = new HashMap<>();
 
+    @Column(name = "eliminado", columnDefinition = "BIT(1) DEFAULT 0")
+    private Boolean eliminado;
+
     public Integer getId() {
         return id;
     }
@@ -65,8 +68,8 @@ public class OrdenProvision {
         return fechaOrden;
     }
 
-    public void setFechaOrden(String fechaOrden) {
-        this.fechaOrden = LocalDateTime.parse(fechaOrden);
+    public void setFechaOrden(LocalDateTime fechaOrden) {
+        this.fechaOrden = fechaOrden;
     }
 
     public Sucursal getSucursalDestino() {
@@ -129,5 +132,22 @@ public class OrdenProvision {
     public String toString() {
         return "OrdenProvision [id=" + id + ", fechaOrden=" + fechaOrden + ", sucursalDestino=" + sucursalDestino.getNombre()
                 + ", limiteHoras=" + limiteHoras + ", estado=" + estado + "]";
+    }
+
+
+    public Map<Producto, Integer> getItemsProductoCantidad() {
+        return itemsProductoCantidad;
+    }
+
+    public void updateProductoCantidad(Producto p, Integer cant) {
+        itemsProductoCantidad.putIfAbsent(p, cant);
+    }
+
+    public Boolean getEliminado() {
+        return eliminado;
+    }
+
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
     }
 }

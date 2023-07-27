@@ -15,7 +15,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "ruta")
-public class Ruta {
+public class Ruta implements Eliminable {
     
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
@@ -38,6 +38,9 @@ public class Ruta {
     
     @Column(name = "estado_ruta")
     private Boolean estado; // operativo true, no operativo false
+
+    @Column(name = "eliminado", columnDefinition = "BIT(1) DEFAULT 0")
+    private Boolean eliminado;
 
     public Integer getId() {
         return id;
@@ -75,8 +78,8 @@ public class Ruta {
         return duracionViaje;
     }
 
-    public void setDuracionViaje(String duracionViaje) {
-        this.duracionViaje = LocalTime.parse(duracionViaje);
+    public void setDuracionViaje(LocalTime duracionViaje) {
+        this.duracionViaje = duracionViaje;
     }
 
     public Boolean getEstado() {
@@ -139,6 +142,14 @@ public class Ruta {
         return "Ruta [id=" + id + ", sucursalOrigen=" + sucursalOrigen.getNombre() + ", sucursalDestino=" + sucursalDestino.getNombre()
                 + ", capacidadEnKilos=" + capacidadEnKilos + ", duracionViaje=" + duracionViaje + ", estado=" + estadoToString()
                 + "]";
+    }
+
+    public Boolean getEliminado() {
+        return eliminado;
+    }
+
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
     }
 
     

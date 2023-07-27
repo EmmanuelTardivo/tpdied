@@ -19,9 +19,9 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "sucursal")
-public class Sucursal {
+public class Sucursal implements Eliminable {
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_sucursal")
     private Integer id;
 
@@ -30,24 +30,21 @@ public class Sucursal {
 
     @Column(name = "hora_cierre")
     private LocalTime horaCierre;
-    
+
     @Column(name = "nombre_sucursal")
     private String nombre;
-    
+
     @Column(name = "estado_sucursal")
     private Boolean estado; // operativo true, no operativo false
 
     @ElementCollection
-    @CollectionTable(
-        name = "stock_sucursal",
-        joinColumns = @JoinColumn(name = "id_sucursal"),
-        foreignKey = @ForeignKey(name = "STOCK_SUCURSAL_FK")
-    )
+    @CollectionTable(name = "stock_sucursal", joinColumns = @JoinColumn(name = "id_sucursal"), foreignKey = @ForeignKey(name = "STOCK_SUCURSAL_FK"))
     @MapKeyJoinColumn(name = "id_producto", foreignKey = @ForeignKey(name = "STOCK_PRODUCTO_FK"))
     @Column(name = "cantidad")
     private Map<Producto, Integer> listaProductoCantidadEnStock = new HashMap<>();
 
-    
+    @Column(name = "eliminado", columnDefinition = "BIT(1) DEFAULT 0")
+    private Boolean eliminado;
 
     public Integer getId() {
         return id;
@@ -61,16 +58,16 @@ public class Sucursal {
         return horaApertura;
     }
 
-    public void setHoraApertura(String horaApertura) {
-        this.horaApertura = LocalTime.parse(horaApertura);
+    public void setHoraApertura(LocalTime horaApertura) {
+        this.horaApertura = horaApertura;
     }
 
     public LocalTime getHoraCierre() {
         return horaCierre;
     }
 
-    public void setHoraCierre(String horaCierre) {
-        this.horaCierre = LocalTime.parse(horaCierre);
+    public void setHoraCierre(LocalTime horaCierre) {
+        this.horaCierre = horaCierre;
     }
 
     public String getNombre() {
@@ -85,7 +82,7 @@ public class Sucursal {
         return estado;
     }
 
-    public String estadoToString() {
+    private String estadoToString() {
         return estado ? "Operativo" : "No operativo";
     }
 
@@ -124,14 +121,6 @@ public class Sucursal {
                 + nombre + ", estado=" + estadoToString() + "]";
     }
 
-    public void setHoraApertura(LocalTime horaApertura) {
-        this.horaApertura = horaApertura;
-    }
-
-    public void setHoraCierre(LocalTime horaCierre) {
-        this.horaCierre = horaCierre;
-    }
-
     public Map<Producto, Integer> getListaProductoCantidadEnStock() {
         return listaProductoCantidadEnStock;
     }
@@ -144,4 +133,11 @@ public class Sucursal {
         return Optional.ofNullable(listaProductoCantidadEnStock.get(p));
     }
 
+    public Boolean getEliminado() {
+        return eliminado;
+    }
+
+    public void setEliminado(Boolean eliminado) {
+        this.eliminado = eliminado;
+    }
 }
