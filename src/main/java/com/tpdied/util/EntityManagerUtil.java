@@ -6,12 +6,22 @@ import javax.persistence.Persistence;
 
 public class EntityManagerUtil {
 
-	public static EntityManager getEntityManager() {
-		EntityManagerFactory factory = Persistence.createEntityManagerFactory("tpdied");
-		EntityManager manager = factory.createEntityManager();
-		return manager;
+	private static EntityManagerFactory factory;
+
+	private EntityManagerUtil(){
 	}
 
+	public static EntityManager getEntityManager() {
+		if (factory == null)
+			factory = Persistence.createEntityManagerFactory("tpdied");
+		return factory.createEntityManager();
+	}
+
+	public static void closeEntityManagerFactory() {
+        if (factory != null) {
+            factory.close();
+        }
+    }
     /* public static void main(String[] args) {
 		EntityManager manager = EntityManagerUtil.getEntityManager();
 		System.out.println("EntityManager class ==> " + manager.getClass().getCanonicalName());

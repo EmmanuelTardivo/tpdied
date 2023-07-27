@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import com.tpdied.util.EntityManagerUtil;
 
@@ -27,7 +27,7 @@ public abstract class AbstractDao<T> implements Dao<T> {
 	@Override
 	public List<T> getAll() {
 		String qlString = "FROM " + clase.getName();
-		Query query = entityManager.createQuery(qlString);
+		TypedQuery<T> query = entityManager.createQuery(qlString, clase);
 		return query.getResultList();
 	}
 
