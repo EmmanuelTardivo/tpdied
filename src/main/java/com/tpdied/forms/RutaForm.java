@@ -11,7 +11,6 @@ public class RutaForm {
     /**
      * Valida los datos de la ruta dada en los args String
      * 
-     * @param nombre
      * @param capacidadEnKilos
      * @param sucursalOrigen
      * @param sucursalDestino

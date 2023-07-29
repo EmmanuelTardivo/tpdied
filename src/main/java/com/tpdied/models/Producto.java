@@ -109,7 +109,4 @@ public class Producto implements Eliminable {
     public void setEliminado(Boolean eliminado) {
         this.eliminado = eliminado;
     }
-    
-    
-
 }
