@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
-import javax.persistence.TypedQuery;
-
 import com.tpdied.models.Eliminable;
 import com.tpdied.util.EntityManagerUtil;
+
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.TypedQuery;
 
 public abstract class AbstractDao<T extends Eliminable> implements Dao<T> {
 

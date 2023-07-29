@@ -1,11 +1,11 @@
 package com.tpdied.models;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "producto")
@@ -29,7 +29,7 @@ public class Producto implements Eliminable {
     private Double peso;
 
     @Column(name = "eliminado", columnDefinition = "BIT(1) DEFAULT 0")
-    private Boolean eliminado;
+    private Boolean eliminado = false;
 
     public Integer getId() {
         return id;
