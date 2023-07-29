@@ -18,7 +18,9 @@ public abstract class AbstractDao<T extends Eliminable> implements Dao<T> {
 
 	@Override
 	public Optional<T> getById(int id) {
-		return Optional.ofNullable(entityManager.find(clase, id));
+		Optional<T> entity = Optional.ofNullable(entityManager.find(clase, id));
+		return entity.isPresent() && !entity.get().getEliminado() ?
+			entity : Optional.empty();
 	}
 
 	public EntityManager getEntityManager() {
@@ -27,7 +29,7 @@ public abstract class AbstractDao<T extends Eliminable> implements Dao<T> {
 
 	@Override
 	public List<T> getAll() {
-		String qlString = "FROM " + clase.getName();
+		String qlString = "FROM " + clase.getName() + " WHERE eliminado = 0"; //revisar
 		TypedQuery<T> query = entityManager.createQuery(qlString, clase);
 		return query.getResultList();
 	}

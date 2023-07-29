@@ -40,8 +40,8 @@ public class OrdenProvision implements Eliminable{
     private Integer limiteHoras;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado_orden", columnDefinition = "VARCHAR(15) CHECK (estado_orden IN ('PENDIENTE', 'EN_PROCESO', 'COMPLETADO'))")
-    private EstadoOrden estado;
+    @Column(name = "estado_orden", columnDefinition = "VARCHAR(15) CHECK (estado_orden IN ('PENDIENTE', 'EN_PROCESO', 'COMPLETADO')) DEFAUTL 'PENDIENTE'")
+    private EstadoOrden estado = EstadoOrden.PENDIENTE;
 
     @ElementCollection
     @CollectionTable(
@@ -150,4 +150,9 @@ public class OrdenProvision implements Eliminable{
     public void setEliminado(Boolean eliminado) {
         this.eliminado = eliminado;
     }
+
+    public void setItemsProductoCantidad(Map<Producto, Integer> itemsProductoCantidad) {
+        this.itemsProductoCantidad = itemsProductoCantidad;
+    }
+    
 }
