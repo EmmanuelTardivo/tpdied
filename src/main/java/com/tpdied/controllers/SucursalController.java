@@ -34,4 +34,14 @@ public class SucursalController {
         sucursalDao.save(sucursal);
     }
 
+    public void updateEntity(SucursalDTO dto) {
+        Sucursal sucursal = (SucursalMapper.toEntity(dto));
+        sucursalDao.update(sucursal);
+    }
+
+    public void deleteEntity(SucursalDTO dto) {
+        Sucursal sucursal = (SucursalMapper.toEntity(dto));
+        sucursalDao.delete(sucursal);
+    }
+
 }

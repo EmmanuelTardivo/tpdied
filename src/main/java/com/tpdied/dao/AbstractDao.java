@@ -45,8 +45,8 @@ public abstract class AbstractDao<T extends Eliminable> implements Dao<T> {
 	@Override
 	public void delete(T t) {
 		t.setEliminado(true);
-        update(t);
-		}
+		update(t);
+	}
 
 	public void setClase(Class<T> clase) {
 		this.clase = clase;
