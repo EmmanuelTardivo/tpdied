@@ -1,7 +1,6 @@
 package com.tpdied.controllers;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.tpdied.dao.ProductoDao;
@@ -9,12 +8,14 @@ import com.tpdied.dto.ProductoDTO;
 import com.tpdied.mappers.ProductoMapper;
 import com.tpdied.models.Producto;
 
+import jakarta.persistence.EntityManager;
+
 public class ProductoController {
 
     private ProductoDao productoDao;
 
-    public ProductoController() {
-        productoDao = new ProductoDao();
+    public ProductoController(EntityManager entityManager) {
+        productoDao = new ProductoDao(entityManager);
     }
 
     public List<ProductoDTO> getAllEntities() {
@@ -25,8 +26,8 @@ public class ProductoController {
     }
 
     public ProductoDTO getEntityById(int id) {
-        Optional<Producto> producto = productoDao.getById(id);
-        return producto.isPresent() ? ProductoMapper.toDto(producto.get()) : null;
+        Producto producto = productoDao.getById(id);
+        return producto != null ? ProductoMapper.toDto(producto) : null;
     }
 
     public void addEntity(ProductoDTO dto) {

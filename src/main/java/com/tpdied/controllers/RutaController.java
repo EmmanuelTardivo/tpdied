@@ -2,7 +2,6 @@
 package com.tpdied.controllers;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.tpdied.dao.RutaDao;
@@ -10,12 +9,14 @@ import com.tpdied.dto.RutaDTO;
 import com.tpdied.mappers.RutaMapper;
 import com.tpdied.models.Ruta;
 
+import jakarta.persistence.EntityManager;
+
 public class RutaController {
 
     private RutaDao rutaDao;
 
-    public RutaController() {
-        rutaDao = new RutaDao();
+    public RutaController(EntityManager entityManager) {
+        rutaDao = new RutaDao(entityManager);
     }
 
     public List<RutaDTO> getAllEntities() {
@@ -26,8 +27,8 @@ public class RutaController {
     }
 
     public RutaDTO getEntityById(int id) {
-        Optional<Ruta> ruta = rutaDao.getById(id);
-        return ruta.isPresent() ? RutaMapper.toDto(ruta.get()) : null;
+        Ruta ruta = rutaDao.getById(id);
+        return ruta != null ? RutaMapper.toDto(ruta) : null;
     }
 
     public void addEntity(RutaDTO dto) {

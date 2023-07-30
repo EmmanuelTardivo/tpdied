@@ -1,26 +1,25 @@
 package com.tpdied.dao;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 import com.tpdied.models.Eliminable;
-import com.tpdied.util.EntityManagerUtil;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 
 public abstract class AbstractDao<T extends Eliminable> implements Dao<T> {
 
-	private EntityManager entityManager = EntityManagerUtil.getEntityManager();
-	private Class<T> clase;
+	private final EntityManager entityManager;
+    private Class<T> clase;
+
+    public AbstractDao(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
 
 	@Override
-	public Optional<T> getById(int id) {
-		Optional<T> entity = Optional.ofNullable(entityManager.find(clase, id));
-		return entity.isPresent() && !entity.get().getEliminado() ?
-			entity : Optional.empty();
+	public T getById(int id) {
+		return entityManager.find(clase, id);
 	}
 
 	public EntityManager getEntityManager() {
@@ -55,14 +54,15 @@ public abstract class AbstractDao<T extends Eliminable> implements Dao<T> {
 	}
 
 	private void executeInsideTransaction(Consumer<EntityManager> action) {
-		EntityTransaction tx = entityManager.getTransaction();
 		try {
-			tx.begin();
+			entityManager.getTransaction().begin();
 			action.accept(entityManager);
-			tx.commit();
+			entityManager.getTransaction().commit();
 		} catch (RuntimeException e) {
-			tx.rollback();
+			entityManager.getTransaction().rollback();
 			throw e;
 		}
 	}
+	
+	
 }

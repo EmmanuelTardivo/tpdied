@@ -1,7 +1,6 @@
 package com.tpdied.controllers;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.tpdied.dao.SucursalDao;
@@ -9,12 +8,14 @@ import com.tpdied.dto.SucursalDTO;
 import com.tpdied.mappers.SucursalMapper;
 import com.tpdied.models.Sucursal;
 
+import jakarta.persistence.EntityManager;
+
 public class SucursalController {
 
     private SucursalDao sucursalDao;
 
-    public SucursalController() {
-        sucursalDao = new SucursalDao();
+    public SucursalController(EntityManager entityManager) {
+        sucursalDao = new SucursalDao(entityManager);
     }
 
     public List<SucursalDTO> getAllEntities() {
@@ -25,8 +26,8 @@ public class SucursalController {
     }
 
     public SucursalDTO getEntityById(int id) {
-        Optional<Sucursal> sucursal = sucursalDao.getById(id);
-        return sucursal.isPresent() ? SucursalMapper.toDto(sucursal.get()) : null;
+        Sucursal sucursal = sucursalDao.getById(id);
+        return sucursal != null ? SucursalMapper.toDto(sucursal) : null;
     }
 
     public void addEntity(SucursalDTO dto) {

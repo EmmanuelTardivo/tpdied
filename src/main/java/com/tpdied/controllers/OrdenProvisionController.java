@@ -1,7 +1,6 @@
 package com.tpdied.controllers;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.tpdied.dao.OrdenProvisionDao;
@@ -9,11 +8,14 @@ import com.tpdied.dto.OrdenProvisionDTO;
 import com.tpdied.mappers.OrdenProvisionMapper;
 import com.tpdied.models.OrdenProvision;
 
+import jakarta.persistence.EntityManager;
+
 public class OrdenProvisionController {
+
     private OrdenProvisionDao ordenProvisionDao;
 
-    public OrdenProvisionController() {
-        ordenProvisionDao = new OrdenProvisionDao();
+    public OrdenProvisionController(EntityManager entityManager) {
+        ordenProvisionDao = new OrdenProvisionDao(entityManager);
     }
 
     public List<OrdenProvisionDTO> getAllEntities() {
@@ -24,8 +26,8 @@ public class OrdenProvisionController {
     }
 
     public OrdenProvisionDTO getEntityById(int id) {
-        Optional<OrdenProvision> orden = ordenProvisionDao.getById(id);
-        return orden.isPresent() ? OrdenProvisionMapper.toDto(orden.get()) : null;
+        OrdenProvision orden = ordenProvisionDao.getById(id);
+        return orden != null ? OrdenProvisionMapper.toDto(orden) : null;
     }
 
     public void addEntity(OrdenProvisionDTO dto) {
