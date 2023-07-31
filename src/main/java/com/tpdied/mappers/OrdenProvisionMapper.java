@@ -1,5 +1,6 @@
 package com.tpdied.mappers;
 
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -15,10 +16,10 @@ public class OrdenProvisionMapper {
         orden.setFechaOrden(ordenDTO.getFechaOrden());
         orden.setSucursalDestino(SucursalMapper.toEntity(ordenDTO.getSucursalDestino()));
         Map<Producto, Integer> items = ordenDTO.getItemsProductoCantidad()
-            .entrySet()
-            .stream()
-            .collect(Collectors.toMap(
-                    entry -> ProductoMapper.toEntity(entry.getKey()), Map.Entry::getValue));
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        entry -> ProductoMapper.toEntity(entry.getKey()), Map.Entry::getValue));
         orden.setItemsProductoCantidad(items);
         orden.setLimiteHoras(ordenDTO.getLimiteHoras());
         orden.setEstado(ordenDTO.getEstado());
@@ -32,14 +33,26 @@ public class OrdenProvisionMapper {
         ordenDTO.setFechaOrden(orden.getFechaOrden());
         ordenDTO.setSucursalDestino(SucursalMapper.toDto(orden.getSucursalDestino()));
         Map<ProductoDTO, Integer> items = orden.getItemsProductoCantidad()
-            .entrySet()
-            .stream()
-            .collect(Collectors.toMap(
-                    entry -> ProductoMapper.toDto(entry.getKey()), Map.Entry::getValue));
+                .entrySet()
+                .stream()
+                .collect(Collectors.toMap(
+                        entry -> ProductoMapper.toDto(entry.getKey()), Map.Entry::getValue));
         ordenDTO.setItemsProductoCantidad(items);
         ordenDTO.setLimiteHoras(orden.getLimiteHoras());
         ordenDTO.setEstado(orden.getEstado());
 
         return ordenDTO;
+    }
+
+    public static List<OrdenProvision> toEntity(List<OrdenProvisionDTO> ordenesDto) {
+        return ordenesDto.stream()
+                .map(OrdenProvisionMapper::toEntity)
+                .collect(Collectors.toList());
+    }
+
+    public static List<OrdenProvisionDTO> toDto(List<OrdenProvision> ordenes) {
+        return ordenes.stream()
+                .map(OrdenProvisionMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

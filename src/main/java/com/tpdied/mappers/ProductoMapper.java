@@ -1,5 +1,8 @@
 package com.tpdied.mappers;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.tpdied.dto.ProductoDTO;
 import com.tpdied.models.Producto;
 
@@ -41,4 +44,15 @@ public class ProductoMapper {
         return productoDTO;
     }
 
+    public static List<Producto> toEntity(List<ProductoDTO> productosDto) {
+        return productosDto.stream()
+                .map(ProductoMapper::toEntity)
+                .collect(Collectors.toList());
+    }
+
+    public static List<ProductoDTO> toDto(List<Producto> productos) {
+        return productos.stream()
+                .map(ProductoMapper::toDto)
+                .collect(Collectors.toList());
+    }
 }

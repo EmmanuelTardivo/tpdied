@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import com.tpdied.models.Eliminable;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 
 public abstract class AbstractDao<T extends Eliminable> implements Dao<T> {
@@ -54,15 +55,17 @@ public abstract class AbstractDao<T extends Eliminable> implements Dao<T> {
 	}
 
 	private void executeInsideTransaction(Consumer<EntityManager> action) {
-		try {
-			entityManager.getTransaction().begin();
-			action.accept(entityManager);
-			entityManager.getTransaction().commit();
-		} catch (RuntimeException e) {
-			entityManager.getTransaction().rollback();
-			throw e;
-		}
-	}
+    EntityTransaction tx = entityManager.getTransaction();
+    try {
+        tx.begin();
+        action.accept(entityManager);
+        tx.commit();
+    } catch (RuntimeException e) {
+        tx.rollback();
+        throw e;
+    }
+}
+
 	
 	
 }
