@@ -3,12 +3,9 @@ package com.tpdied;
 import java.time.LocalTime;
 
 import com.tpdied.controllers.SucursalController;
-import com.tpdied.dao.OrdenProvisionDao;
 import com.tpdied.dao.ProductoDao;
 import com.tpdied.dao.RutaDao;
 import com.tpdied.dao.SucursalDao;
-import com.tpdied.dto.SucursalDTO;
-import com.tpdied.mappers.SucursalMapper;
 import com.tpdied.models.Producto;
 import com.tpdied.models.Ruta;
 import com.tpdied.models.Sucursal;
@@ -23,7 +20,6 @@ public class App {
         SucursalDao sDao = new SucursalDao(entityManager);
         RutaDao rDao = new RutaDao(entityManager);
         ProductoDao pDao = new ProductoDao(entityManager);
-        OrdenProvisionDao oDao = new OrdenProvisionDao(entityManager);
 
         Sucursal s1 = new Sucursal();
         s1.setEstado(true);
@@ -73,9 +69,9 @@ public class App {
         sDao.update(s1);
         
         SucursalController sc = new SucursalController(entityManager);
-        System.out.println(sc.getEntityById(1));
-        System.out.println(sc.getAllEntities());
-        System.out.println(sc.getEntityById(3));
+        System.out.println(sc.getSucursalById(1));
+        System.out.println(sc.getAllSucursales());
+        System.out.println(sc.getSucursalById(3));
         
     }
 }

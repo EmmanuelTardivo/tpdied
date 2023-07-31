@@ -36,10 +36,10 @@ public class SucursalDao extends AbstractDao <Sucursal>{
         return query.getResultList();
     }
 
-    public List<Sucursal> getByOperativa(Boolean operativa) {
-        String qlString = "SELECT s FROM Sucursal s WHERE s.eliminado = 0 AND s.estado_sucursal = :operativa";
+    public List<Sucursal> getByEstado(Boolean estado) {
+        String qlString = "SELECT s FROM Sucursal s WHERE s.eliminado = 0 AND s.estado_sucursal = :estado";
         TypedQuery<Sucursal> query = getEntityManager().createQuery(qlString, Sucursal.class);
-        query.setParameter("operativa", operativa);
+        query.setParameter("estado", estado);
         return query.getResultList();
     }
 }

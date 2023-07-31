@@ -9,7 +9,7 @@ import com.tpdied.models.Producto;
 public class ProductoMapper {
 
     /**
-     * Produce una instancia de Producto con los datos del DTO arg
+     * Produce una instancia de Producto con los datos del DTO
      * 
      * @param productoDTO
      * @return Producto con datos de DTO
@@ -44,12 +44,24 @@ public class ProductoMapper {
         return productoDTO;
     }
 
+    /**
+     * Produce una lista de instancias de Producto con la lista de DTOs
+     * 
+     * @param productoDTO
+     * @return Producto con datos de DTO
+     */
     public static List<Producto> toEntity(List<ProductoDTO> productosDto) {
         return productosDto.stream()
                 .map(ProductoMapper::toEntity)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Produce una lista de DTO con la lista de objetos Producto
+     * 
+     * @param producto
+     * @return DTO con datos de obj. Producto
+     */
     public static List<ProductoDTO> toDto(List<Producto> productos) {
         return productos.stream()
                 .map(ProductoMapper::toDto)

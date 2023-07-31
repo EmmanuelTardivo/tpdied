@@ -44,10 +44,10 @@ public class RutaDao extends AbstractDao<Ruta> {
         return query.getResultList();
     }
 
-    public List<Ruta> getByOperativa(Boolean operativa) {
-        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = 0 AND r.estado_ruta = :operativa";
+    public List<Ruta> getByEstado(Boolean estado) {
+        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = 0 AND r.estado_ruta = :estado";
         TypedQuery<Ruta> query = getEntityManager().createQuery(qlString, Ruta.class);
-        query.setParameter("operativa", operativa);
+        query.setParameter("estado", estado);
         return query.getResultList();
     }
 }

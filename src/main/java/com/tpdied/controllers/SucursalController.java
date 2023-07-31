@@ -24,16 +24,16 @@ public class SucursalController {
         sucursalDao = new SucursalDao(entityManager);
     }
 
-    public List<SucursalDTO> getAllEntities() {
+    public List<SucursalDTO> getAllSucursales() {
         return SucursalMapper.toDto(sucursalDao.getAll());
     }
 
-    public SucursalDTO getEntityById(int id) {
+    public SucursalDTO getSucursalById(int id) {
         Sucursal sucursal = sucursalDao.getById(id);
         return sucursal != null ? SucursalMapper.toDto(sucursal) : null;
     }
 
-    public SucursalDTO getEntityByName(String name) {
+    public SucursalDTO getSucursalByName(String name) {
          try {
             Sucursal sucursal = sucursalDao.getByName(name);
             return SucursalMapper.toDto(sucursal);
@@ -42,32 +42,31 @@ public class SucursalController {
         }
     }
 
-    public List<SucursalDTO> getEntityByHorarioApertura(LocalTime horarioApertura) {
+    public List<SucursalDTO> getSucursalesByHorarioApertura(LocalTime horarioApertura) {
         return SucursalMapper.toDto(sucursalDao.getByHorarioApertura(horarioApertura));
     }
 
-    public List<SucursalDTO> getEntityByHorarioCierre(LocalTime horarioCierre) {
+    public List<SucursalDTO> getSucursalesByHorarioCierre(LocalTime horarioCierre) {
         return SucursalMapper.toDto(sucursalDao.getByHorarioCierre(horarioCierre));
     }
 
-    public List<SucursalDTO> getEntityByOperativa(Boolean operativa) {
-        return SucursalMapper.toDto(sucursalDao.getByOperativa(operativa));
+    public List<SucursalDTO> getSucursalesByEstado(Boolean estado) {
+        return SucursalMapper.toDto(sucursalDao.getByEstado(estado));
     }
 
-    public void addEntity(SucursalDTO dto) {
-        String name = dto.getNombre();
-        if (sucursalDao.getByName(name) != null)
-            throw new IllegalArgumentException("Ya existe una sucursal con el mismo nombre.");
+    public void addSucursal(SucursalDTO dto) {
         Sucursal sucursal = (SucursalMapper.toEntity(dto));
+        if (sucursalDao.getAll().contains(sucursal))
+            throw new IllegalArgumentException("Ya existe una sucursal con el mismo nombre.");
         sucursalDao.save(sucursal);
     }
 
-    public void updateEntity(SucursalDTO dto) {
+    public void updateSucursal(SucursalDTO dto) {
         Sucursal sucursal = (SucursalMapper.toEntity(dto));
         sucursalDao.update(sucursal);
     }
 
-    public void deleteEntity(SucursalDTO dto) {
+    public void deleteSucursal(SucursalDTO dto) {
         Sucursal sucursal = (SucursalMapper.toEntity(dto));
         sucursalDao.delete(sucursal);
     }
