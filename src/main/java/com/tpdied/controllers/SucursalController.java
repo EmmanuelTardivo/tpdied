@@ -14,7 +14,6 @@ import com.tpdied.models.Producto;
 import com.tpdied.models.Sucursal;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 
 public class SucursalController {
 
@@ -34,12 +33,8 @@ public class SucursalController {
     }
 
     public SucursalDTO getSucursalByName(String name) {
-         try {
-            Sucursal sucursal = sucursalDao.getByName(name);
-            return SucursalMapper.toDto(sucursal);
-        } catch (NoResultException e) {
-            return null;
-        }
+        Sucursal sucursal = sucursalDao.getByName(name);
+        return sucursal != null ? SucursalMapper.toDto(sucursal) : null;
     }
 
     public List<SucursalDTO> getSucursalesByHorarioApertura(LocalTime horarioApertura) {
@@ -78,7 +73,7 @@ public class SucursalController {
         sucursalDao.update(sucursal);
     }
 
-    public Map<Producto,Integer> getStockProductos(SucursalDTO sucursalDto) {
+    public Map<Producto, Integer> getStockProductos(SucursalDTO sucursalDto) {
         return SucursalMapper.toEntity(sucursalDto).getListaProductoCantidadEnStock();
     }
 
@@ -89,13 +84,13 @@ public class SucursalController {
         return stock.isPresent() ? stock.get() : 0;
     }
 
-    public void setSucursalOperativa(SucursalDTO suscursalDto){
+    public void setSucursalOperativa(SucursalDTO suscursalDto) {
         Sucursal sucursal = SucursalMapper.toEntity(suscursalDto);
         sucursal.setEstado(true);
         sucursalDao.update(sucursal);
     }
 
-    public void setSucursalNoOperativa(SucursalDTO suscursalDto){
+    public void setSucursalNoOperativa(SucursalDTO suscursalDto) {
         Sucursal sucursal = SucursalMapper.toEntity(suscursalDto);
         sucursal.setEstado(false);
         sucursalDao.update(sucursal);

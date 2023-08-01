@@ -1,77 +1,83 @@
 package com.tpdied;
 
-import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.tpdied.controllers.OrdenProvisionController;
+import com.tpdied.controllers.ProductoController;
+import com.tpdied.controllers.RutaController;
 import com.tpdied.controllers.SucursalController;
-import com.tpdied.dao.ProductoDao;
-import com.tpdied.dao.RutaDao;
-import com.tpdied.dao.SucursalDao;
-import com.tpdied.models.Producto;
-import com.tpdied.models.Ruta;
-import com.tpdied.models.Sucursal;
+import com.tpdied.dto.ProductoDTO;
+import com.tpdied.dto.SucursalDTO;
+import com.tpdied.forms.SucursalForm;
 import com.tpdied.util.EntityManagerUtil;
 
 import jakarta.persistence.EntityManager;
 
 public class App {
     public static void main(String[] args) {
+        EntityManagerUtil.limpiarDB();
+
         EntityManager entityManager = EntityManagerUtil.getEntityManager();
 
-        SucursalDao sDao = new SucursalDao(entityManager);
-        RutaDao rDao = new RutaDao(entityManager);
-        ProductoDao pDao = new ProductoDao(entityManager);
-
-        Sucursal s1 = new Sucursal();
-        s1.setEstado(true);
-        s1.setHoraApertura(LocalTime.parse("08:00"));
-        s1.setHoraCierre(LocalTime.parse("20:00"));
-        s1.setNombre("Sucursal 1");
-        System.out.println(s1);
-        sDao.save(s1);
-        System.out.println(sDao.getById(1));
-
-        Sucursal s2 = new Sucursal();
-        s2.setEstado(true);
-        s2.setHoraApertura(LocalTime.parse("08:00"));
-        s2.setHoraCierre(LocalTime.parse("08:00"));
-        s2.setNombre("Sucursal 2");
-        System.out.println(s2);
-        sDao.save(s2);
-        System.out.println(sDao.getById(2));
-        System.out.println(sDao.getAll());
-
-        Ruta r1 = new Ruta();
-        r1.setEstado(true);
-        r1.setCapacidadEnKilos(50.0);
-        r1.setSucursalDestino(s1);
-        r1.setSucursalOrigen(s2);
-        r1.setDuracionViaje(LocalTime.parse("08:00"));
-        System.out.println(r1);
-        rDao.save(r1);
-        System.out.println(rDao.getById(1));
-        System.out.println(rDao.getAll());
-
-        Producto p1 = new Producto();
-        p1.setDescripcion("chancletas!!");
-        p1.setNombre("chancletas");
-        p1.setPeso(0.70);
-        p1.setPrecio(4999.99);
-        System.out.println(p1);
-        pDao.save(p1);
-        System.out.println(pDao.getById(1));
-        
-        s1.getListaProductoCantidadEnStock();
-        s1.getCantidadProductoEnStock(p1);
-        s1.updateProductoCantidadEnStock(p1, 10);
-        s1.getListaProductoCantidadEnStock();
-        s1.getCantidadProductoEnStock(p1);
-
-        sDao.update(s1);
-        
         SucursalController sc = new SucursalController(entityManager);
-        System.out.println(sc.getSucursalById(1));
+        RutaController rc = new RutaController(entityManager);
+        ProductoController pc = new ProductoController(entityManager);
+        OrdenProvisionController oc = new OrdenProvisionController(entityManager);
+        SucursalDTO s1, s2, s3, s4 = null;
+        List<SucursalDTO> sucursales = new ArrayList<SucursalDTO>();
+        try {
+            s1 = SucursalForm.validarSucursal("Puerto", "08:00", "20:00", true);
+            s2 = SucursalForm.validarSucursal("B", "09:00", "20:00", true);
+            s3 = SucursalForm.validarSucursal("C", "10:00", "19:00", false);
+            s4 = SucursalForm.validarSucursal("D", "09:00", "18:00", true);
+            sucursales = List.of(s1, s2, s3, s4);
+        } catch (Exception e) {
+            System.out.println("error: " + e.getMessage());
+        }
+
+        sucursales.forEach(s -> sc.addSucursal(s));
+
         System.out.println(sc.getAllSucursales());
-        System.out.println(sc.getSucursalById(3));
-        
+
+        sc.deleteSucursal(sc.getSucursalById(4));
+
+        System.out.println(sc.getAllSucursales());
+
+        sc.addSucursal(s4);
+
+        System.out.println(sc.getAllSucursales());
+
+        SucursalDTO s5 = new SucursalDTO();
+        s5.setNombre("B");
+
+        try {
+            sc.addSucursal(s5);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println(sc.getSucursalesByEstado(true));
+
+        System.out.println(sc.getSucursalesByEstado(false));
+
+        ProductoDTO p1 = new ProductoDTO();
+        p1.setNombre("chanclas");
+        p1.setDescripcion("las mejores chanclas");
+        p1.setPeso(4.0);
+        p1.setPrecio(500.0);
+
+        pc.addProducto(p1);
+
+        p1 = pc.getProductoById(1);
+
+        SucursalDTO s1copia = sc.getSucursalById(1);
+        sc.setStockProducto(s1copia, p1, 5);
+
+        System.out.println(p1);
+
+        s1copia = sc.getSucursalById(1);
+        System.out.println(s1copia.getListaProductoCantidadEnStock());
+
     }
 }

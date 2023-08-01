@@ -47,7 +47,7 @@ public class ProductoMapper {
     /**
      * Produce una lista de instancias de Producto con la lista de DTOs
      * 
-     * @param productoDTO
+     * @param productosDto
      * @return Producto con datos de DTO
      */
     public static List<Producto> toEntity(List<ProductoDTO> productosDto) {
@@ -59,7 +59,7 @@ public class ProductoMapper {
     /**
      * Produce una lista de DTO con la lista de objetos Producto
      * 
-     * @param producto
+     * @param productos
      * @return DTO con datos de obj. Producto
      */
     public static List<ProductoDTO> toDto(List<Producto> productos) {

@@ -5,12 +5,13 @@ import java.time.format.DateTimeParseException;
 
 import com.tpdied.dto.SucursalDTO;
 
-public class SucursalForm {// revisar si el id se puede asignar o lo dejamos autoincrement
-    public static SucursalDTO validarSucursal(String nombre, String horaApertura, String horaCierre, Boolean estado)
-            throws Exception {
-        if (!validarNombre(nombre) || !validarHoraApertura(horaApertura)
-                || !validarHoraCierre(horaApertura, horaCierre))
-            throw new Exception("Datos invalidos. Por favor revisar.");
+public class SucursalForm {
+
+    public static SucursalDTO validarSucursal(String nombre, String horaApertura, String horaCierre, Boolean estado) {
+        validarNombre(nombre);
+        validarHoraApertura(horaApertura);
+        validarHoraCierre(horaApertura, horaCierre);
+
         SucursalDTO result = new SucursalDTO();
         result.setNombre(nombre);
         result.setHoraApertura(LocalTime.parse(horaApertura));
@@ -19,34 +20,27 @@ public class SucursalForm {// revisar si el id se puede asignar o lo dejamos aut
         return result;
     }
 
-    private static boolean validarHoraCierre(String horaApertura, String horaCierre) {
-
-        return validarHoraApertura(horaCierre) &&
-            LocalTime.parse(horaCierre).isAfter(LocalTime.parse(horaApertura));
+    private static void validarHoraCierre(String horaApertura, String horaCierre) {
+        if (!LocalTime.parse(horaCierre).isAfter(LocalTime.parse(horaApertura))) {
+            throw new IllegalArgumentException("La hora de cierre debe ser posterior a la hora de apertura.");
+        }
     }
 
-    private static boolean validarHoraApertura(String horaApertura) {
-        if (horaApertura == null || horaApertura.trim().isEmpty()) {
-            return false;
-        }
+    private static void validarHoraApertura(String horaApertura) {
         try {
             LocalTime.parse(horaApertura);
-            return true; // Si no lanza una excepción, la hora es válida
         } catch (DateTimeParseException e) {
-            return false; // Si ocurre una excepción, la hora no es válida
+            throw new IllegalArgumentException("La hora de apertura es invalida.");
         }
     }
 
-    private static boolean validarNombre(String nombre) {
+    private static void validarNombre(String nombre) {
         if (nombre == null || nombre.trim().isEmpty() || nombre.length() > 255) {
-            return false;
+            throw new IllegalArgumentException("El nombre es invalido.");
         }
 
-        if (!nombre.matches("^[a-zA-Z0-9][a-zA-Z0-9\\s]*[a-zA-Z0-9]$")) {
-            return false;
+        if (!nombre.matches("^[a-zA-Z0-9][a-zA-Z0-9\\s]*[a-zA-Z0-9]$|^[a-zA-Z0-9]$")) {
+            throw new IllegalArgumentException("El nombre contiene caracteres no permitidos.");
         }
-
-        return true;
     }
-
 }

@@ -1,6 +1,8 @@
 package com.tpdied.dto;
 
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SucursalDTO {
     
@@ -13,6 +15,16 @@ public class SucursalDTO {
     private String nombre;
 
     private Boolean estado; // operativo true, no operativo false
+
+    private Map<ProductoDTO, Integer> listaProductoCantidadEnStock = new HashMap<ProductoDTO, Integer>();
+
+    public Map<ProductoDTO, Integer> getListaProductoCantidadEnStock() {
+        return listaProductoCantidadEnStock;
+    }
+
+    public void setListaProductoCantidadEnStock(Map<ProductoDTO, Integer> listaProductoCantidadEnStock) {
+        this.listaProductoCantidadEnStock = listaProductoCantidadEnStock;
+    }
 
     public Integer getId() {
         return id;

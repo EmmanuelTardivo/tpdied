@@ -8,7 +8,6 @@ import com.tpdied.mappers.ProductoMapper;
 import com.tpdied.models.Producto;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 
 public class ProductoController {
 
@@ -28,23 +27,20 @@ public class ProductoController {
     }
 
     public ProductoDTO getProductoByName(String name) {
-        try {
-            Producto producto = productoDao.getByName(name);
-            return ProductoMapper.toDto(producto);
-        } catch (NoResultException e) {
-            return null;
-        }
+        Producto producto = productoDao.getByName(name);
+        return producto != null ? ProductoMapper.toDto(producto) : null;
+
     }
 
-    public List<ProductoDTO> getProductosByDescripcion (String descripcion) {
+    public List<ProductoDTO> getProductosByDescripcion(String descripcion) {
         return ProductoMapper.toDto(productoDao.getByDescripcion(descripcion));
     }
 
-    public List<ProductoDTO> getProductosByPrecio(Double precio){
+    public List<ProductoDTO> getProductosByPrecio(Double precio) {
         return ProductoMapper.toDto(productoDao.getByPrecio(precio));
     }
 
-    public List<ProductoDTO> getProductosByPeso(Double peso){
+    public List<ProductoDTO> getProductosByPeso(Double peso) {
         return ProductoMapper.toDto(productoDao.getByPeso(peso));
     }
 

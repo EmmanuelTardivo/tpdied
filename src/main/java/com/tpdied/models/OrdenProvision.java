@@ -22,7 +22,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "orden_de_provision")
-public class OrdenProvision implements Eliminable{
+public class OrdenProvision implements Eliminable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

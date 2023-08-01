@@ -1,9 +1,12 @@
 package com.tpdied.mappers;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.tpdied.dto.ProductoDTO;
 import com.tpdied.dto.SucursalDTO;
+import com.tpdied.models.Producto;
 import com.tpdied.models.Sucursal;
 
 public class SucursalMapper {
@@ -26,6 +29,7 @@ public class SucursalMapper {
         sucursalDTO.setHoraCierre(sucursal.getHoraCierre());
         sucursalDTO.setNombre(sucursal.getNombre());
         sucursalDTO.setEstado(sucursal.getEstado());
+        sucursalDTO.setListaProductoCantidadEnStock(stockProductosToDto(sucursal.getListaProductoCantidadEnStock()));
 
         return sucursalDTO;
     }
@@ -41,4 +45,12 @@ public class SucursalMapper {
                 .map(SucursalMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    private static Map<ProductoDTO, Integer> stockProductosToDto(Map<Producto, Integer> listaProductoCantidadEnStock) {
+        return listaProductoCantidadEnStock.entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> ProductoMapper.toDto(entry.getKey()), // Mapear Producto a ProductoDTO
+                        Map.Entry::getValue // Obtener el Integer del Map original como value
+                ));
+    }    
 }

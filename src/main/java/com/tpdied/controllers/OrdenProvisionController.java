@@ -1,7 +1,6 @@
 package com.tpdied.controllers;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.tpdied.dao.OrdenProvisionDao;
 import com.tpdied.dto.OrdenProvisionDTO;
@@ -18,29 +17,32 @@ public class OrdenProvisionController {
         ordenProvisionDao = new OrdenProvisionDao(entityManager);
     }
 
-    public List<OrdenProvisionDTO> getAllEntities() {
-        List<OrdenProvision> ordenes = ordenProvisionDao.getAll();
-        return ordenes.stream()
-                .map(OrdenProvisionMapper::toDto)
-                .collect(Collectors.toList());
+    public List<OrdenProvisionDTO> getAllOrdenesProvision() {
+        return OrdenProvisionMapper.toDto(ordenProvisionDao.getAll());
     }
 
-    public OrdenProvisionDTO getEntityById(int id) {
+    public List<OrdenProvisionDTO> getOrdenesProvisionPendientes() {
+        return OrdenProvisionMapper.toDto(ordenProvisionDao.getOrdenesPendientes());
+    }
+
+    public OrdenProvisionDTO getOrdenProvisionById(int id) {
         OrdenProvision orden = ordenProvisionDao.getById(id);
         return orden != null ? OrdenProvisionMapper.toDto(orden) : null;
     }
 
-    public void addEntity(OrdenProvisionDTO dto) {
+    public void addOrdenProvision(OrdenProvisionDTO dto) {
         OrdenProvision orden = (OrdenProvisionMapper.toEntity(dto));
+        if (ordenProvisionDao.getAll().contains(orden))
+            throw new IllegalArgumentException("Ya existe la orden.");
         ordenProvisionDao.save(orden);
     }
 
-    public void updateEntity(OrdenProvisionDTO dto) {
+    public void updateOrdenProvision(OrdenProvisionDTO dto) {
         OrdenProvision orden = (OrdenProvisionMapper.toEntity(dto));
         ordenProvisionDao.update(orden);
     }
 
-    public void deleteEntity(OrdenProvisionDTO dto) {
+    public void deleteOrdenProvision(OrdenProvisionDTO dto) {
         OrdenProvision orden = (OrdenProvisionMapper.toEntity(dto));
         ordenProvisionDao.delete(orden);
     }

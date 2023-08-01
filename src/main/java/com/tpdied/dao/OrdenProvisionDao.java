@@ -14,7 +14,7 @@ public class OrdenProvisionDao extends AbstractDao<OrdenProvision>{
     }
 
     public List<OrdenProvision> getOrdenesPendientes(){
-        String qlString = "SELECT o FROM orden_de_provision o WHERE o.eliminado = 0 AND o.estado_orden = 'PENDIENTE'";
+        String qlString = "SELECT o FROM orden_de_provision o WHERE o.eliminado = false AND o.estado = 'PENDIENTE'";
         TypedQuery<OrdenProvision> query = getEntityManager().createQuery(qlString, OrdenProvision.class);
         return query.getResultList();
     }

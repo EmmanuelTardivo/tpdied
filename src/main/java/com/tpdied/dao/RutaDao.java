@@ -17,35 +17,35 @@ public class RutaDao extends AbstractDao<Ruta> {
     }
 
     public List<Ruta> getBySucursalOrigen(Sucursal origen) {
-        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = 0 AND r.id_origen = :origen";
+        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = false AND r.sucursalOrigen = :origen";
         TypedQuery<Ruta> query = getEntityManager().createQuery(qlString, Ruta.class);
         query.setParameter("origen", origen.getId());
         return query.getResultList();
     }
 
     public List<Ruta> getBySucursalDestino(Sucursal destino) {
-        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = 0 AND r.id_destino = :destino";
+        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = false AND r.sucursalDestino = :destino";
         TypedQuery<Ruta> query = getEntityManager().createQuery(qlString, Ruta.class);
         query.setParameter("destino", destino);
         return query.getResultList();
     }
 
     public List<Ruta> getByDuracionViaje(LocalTime duracionViaje) {
-        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = 0 AND r.duracion_viaje = :duracionViaje";
+        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = false AND r.duracionViaje = :duracionViaje";
         TypedQuery<Ruta> query = getEntityManager().createQuery(qlString, Ruta.class);
         query.setParameter("duracionViaje", duracionViaje);
         return query.getResultList();
     }
 
     public List<Ruta> getByCapacidadEnKilos(Double capacidadEnKilos) {
-        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = 0 AND r.capacidad_en_kilos = :capacidadEnKilos";
+        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = false AND r.capacidadEnKilos = :capacidadEnKilos";
         TypedQuery<Ruta> query = getEntityManager().createQuery(qlString, Ruta.class);
         query.setParameter("capacidadEnKilos", capacidadEnKilos);
         return query.getResultList();
     }
 
     public List<Ruta> getByEstado(Boolean estado) {
-        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = 0 AND r.estado_ruta = :estado";
+        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = false AND r.estado_ruta = :estado";
         TypedQuery<Ruta> query = getEntityManager().createQuery(qlString, Ruta.class);
         query.setParameter("estado", estado);
         return query.getResultList();
