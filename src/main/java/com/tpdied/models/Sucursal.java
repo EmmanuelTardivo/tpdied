@@ -43,7 +43,7 @@ public class Sucursal implements Eliminable {
     @Column(name = "cantidad")
     private Map<Producto, Integer> listaProductoCantidadEnStock = new HashMap<>();
 
-    @Column(name = "eliminado", columnDefinition = "BIT(1) DEFAULT 0")
+    @Column(name = "eliminado", columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean eliminado = false;
 
     public Integer getId() {
@@ -139,5 +139,9 @@ public class Sucursal implements Eliminable {
 
     public void setEliminado(Boolean eliminado) {
         this.eliminado = eliminado;
+    }
+
+    public void setListaProductoCantidadEnStock(Map<Producto, Integer> listaProductoCantidadEnStock) {
+        this.listaProductoCantidadEnStock = listaProductoCantidadEnStock;
     }
 }

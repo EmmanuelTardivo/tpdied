@@ -5,6 +5,7 @@ import java.util.List;
 import com.tpdied.dao.OrdenProvisionDao;
 import com.tpdied.dto.OrdenProvisionDTO;
 import com.tpdied.mappers.OrdenProvisionMapper;
+import com.tpdied.models.EstadoOrden;
 import com.tpdied.models.OrdenProvision;
 
 import jakarta.persistence.EntityManager;
@@ -34,6 +35,7 @@ public class OrdenProvisionController {
         OrdenProvision orden = (OrdenProvisionMapper.toEntity(dto));
         if (ordenProvisionDao.getAll().contains(orden))
             throw new IllegalArgumentException("Ya existe la orden.");
+        orden.setEstado(EstadoOrden.PENDIENTE);
         ordenProvisionDao.save(orden);
     }
 
@@ -47,4 +49,9 @@ public class OrdenProvisionController {
         ordenProvisionDao.delete(orden);
     }
 
+    public void setOrdenEnProceso(OrdenProvisionDTO dto) {
+        OrdenProvision orden = (OrdenProvisionMapper.toEntity(dto));
+        orden.setEstado(EstadoOrden.EN_PROCESO);
+        ordenProvisionDao.update(orden);
+    }
 }

@@ -64,10 +64,55 @@ public class RutaDTO {
     }
 
     @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((sucursalOrigen == null) ? 0 : sucursalOrigen.hashCode());
+        result = prime * result + ((sucursalDestino == null) ? 0 : sucursalDestino.hashCode());
+        result = prime * result + ((capacidadEnKilos == null) ? 0 : capacidadEnKilos.hashCode());
+        result = prime * result + ((duracionViaje == null) ? 0 : duracionViaje.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        RutaDTO other = (RutaDTO) obj;
+        if (sucursalOrigen == null) {
+            if (other.sucursalOrigen != null)
+                return false;
+        } else if (!sucursalOrigen.equals(other.sucursalOrigen))
+            return false;
+        if (sucursalDestino == null) {
+            if (other.sucursalDestino != null)
+                return false;
+        } else if (!sucursalDestino.equals(other.sucursalDestino))
+            return false;
+        if (capacidadEnKilos == null) {
+            if (other.capacidadEnKilos != null)
+                return false;
+        } else if (!capacidadEnKilos.equals(other.capacidadEnKilos))
+            return false;
+        if (duracionViaje == null) {
+            if (other.duracionViaje != null)
+                return false;
+        } else if (!duracionViaje.equals(other.duracionViaje))
+            return false;
+        return true;
+    }
+
+    @Override
     public String toString() {
-        return "Ruta [id=" + id + ", sucursalOrigen=" + sucursalOrigen.getNombre() + ", sucursalDestino=" + sucursalDestino.getNombre()
-                + ", capacidadEnKilos=" + capacidadEnKilos + ", duracionViaje=" + duracionViaje + ", estado=" + estadoToString()
+        return "Ruta [id=" + id + ", sucursalOrigen=" + sucursalOrigen.getNombre() + ", sucursalDestino="
+                + sucursalDestino.getNombre()
+                + ", capacidadEnKilos=" + capacidadEnKilos + ", duracionViaje=" + duracionViaje + ", estado="
+                + estadoToString()
                 + "]";
     }
-    
+
 }

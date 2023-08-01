@@ -6,71 +6,63 @@ import java.time.format.DateTimeParseException;
 import com.tpdied.dto.RutaDTO;
 import com.tpdied.dto.SucursalDTO;
 
+/**
+ * Clase de utilidad para validar y convertir datos relacionados con objetos
+ * Ruta.
+ */
 public class RutaForm {
 
     /**
-     * Valida los datos de la ruta dada en los args String
-     * 
-     * @param capacidadEnKilos
-     * @param sucursalOrigen
-     * @param sucursalDestino
-     * @param duracionViaje
-     * @param estado
-     * @return RutaDTO con los datos transformados de los String.
-     * @throws Exception Si no valida algun campo de los dados.
+     * Valida y convierte los datos proporcionados en un objeto RutaDTO.
+     *
+     * @param capacidadEnKilos La capacidad en kilos de la Ruta.
+     * @param sucursalOrigen   La Sucursal de origen de la Ruta.
+     * @param sucursalDestino  La Sucursal de destino de la Ruta.
+     * @param duracionViaje    La duración del viaje de la Ruta en formato "HH:mm".
+     * @param estado           El estado de la Ruta (activa o inactiva).
+     * @return Objeto RutaDTO con los datos validados.
+     * @throws IllegalArgumentException Si alguno de los datos proporcionados es
+     *                                  inválido.
      */
     public static RutaDTO validarRuta(String capacidadEnKilos, SucursalDTO sucursalOrigen, SucursalDTO sucursalDestino,
-            String duracionViaje, Boolean estado)
-            throws Exception {
-
-        if (!validarCapacidadEnKilos(capacidadEnKilos)
-                || !validarDuracionViaje(duracionViaje))
-            throw new Exception("Ruta invalida. Por favor revisar.");
+            String duracionViaje, Boolean estado) {
+        double capacidadDouble = validarCapacidadEnKilos(capacidadEnKilos);
+        LocalTime duracionViajeTime = validarDuracionViaje(duracionViaje);
 
         RutaDTO result = new RutaDTO();
-        result.setCapacidadEnKilos(Double.parseDouble(capacidadEnKilos));
+        result.setCapacidadEnKilos(capacidadDouble);
         result.setSucursalOrigen(sucursalOrigen);
         result.setSucursalDestino(sucursalDestino);
-        result.setDuracionViaje(LocalTime.parse(duracionViaje));
+        result.setDuracionViaje(duracionViajeTime);
         result.setEstado(estado);
         return result;
     }
 
-    /***
-     * Valida el formato de la capacidad en kilos de una ruta
-     * 
-     * @param capacidadEnKilos
-     * @return True si tiene formato Double y es positivo. False caso contrario
-     */
-    private static boolean validarCapacidadEnKilos(String capacidadEnKilos) {
-        if (capacidadEnKilos == null || capacidadEnKilos.length() == 0) {
-            return false;
+    private static double validarCapacidadEnKilos(String capacidadEnKilos) {
+        if (capacidadEnKilos == null || capacidadEnKilos.isEmpty()) {
+            throw new IllegalArgumentException("La capacidad en kilos no puede ser nula o vacía.");
         }
 
         try {
-           return Double.parseDouble(capacidadEnKilos) > 0.0;
+            double capacidadDouble = Double.parseDouble(capacidadEnKilos);
+            if (capacidadDouble < 0.0) {
+                throw new IllegalArgumentException("La capacidad en kilos debe ser un número positivo mayor a 0.");
+            }
+            return capacidadDouble;
         } catch (NumberFormatException e) {
-            return false;
+            throw new IllegalArgumentException("La capacidad en kilos debe ser un número válido.");
         }
     }
 
-    /***
-     * Valida el formato de la duracion del viaje una ruta
-     * 
-     * @param duracionViaje
-     * @return True si tiene formato de LocalTime. False caso contrario
-     */
-    private static boolean validarDuracionViaje(String duracionViaje) {
+    private static LocalTime validarDuracionViaje(String duracionViaje) {
         if (duracionViaje == null || duracionViaje.trim().isEmpty()) {
-            return false;
+            throw new IllegalArgumentException("La duración del viaje no puede ser nula o vacía.");
         }
 
         try {
-            LocalTime.parse(duracionViaje);
-            return true;
+            return LocalTime.parse(duracionViaje);
         } catch (DateTimeParseException e) {
-            return false;
+            throw new IllegalArgumentException("La duración del viaje debe tener un formato de hora válido (HH:mm).");
         }
     }
-
 }

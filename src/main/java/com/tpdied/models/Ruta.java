@@ -39,7 +39,7 @@ public class Ruta implements Eliminable {
     @Column(name = "estado_ruta")
     private Boolean estado; // operativo true, no operativo false
 
-    @Column(name = "eliminado", columnDefinition = "BIT(1) DEFAULT 0")
+    @Column(name = "eliminado", columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean eliminado = false;
 
     public Integer getId() {

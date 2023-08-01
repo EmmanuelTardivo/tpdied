@@ -18,6 +18,7 @@ public class SucursalMapper {
         sucursal.setHoraCierre(sucursalDTO.getHoraCierre());
         sucursal.setNombre(sucursalDTO.getNombre());
         sucursal.setEstado(sucursalDTO.getEstado());
+        sucursal.setListaProductoCantidadEnStock(stockProductosToEntity(sucursalDTO.getListaProductoCantidadEnStock()));
 
         return sucursal;
     }
@@ -52,5 +53,14 @@ public class SucursalMapper {
                         entry -> ProductoMapper.toDto(entry.getKey()), // Mapear Producto a ProductoDTO
                         Map.Entry::getValue // Obtener el Integer del Map original como value
                 ));
-    }    
+    }
+
+    private static Map<Producto, Integer> stockProductosToEntity(Map<ProductoDTO, Integer> listaProductoCantidadEnStockDTO) {
+        return listaProductoCantidadEnStockDTO.entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> ProductoMapper.toEntity(entry.getKey()), // Mapear ProductoDTO a Producto
+                        Map.Entry::getValue // Obtener el Integer del Map original como value
+                ));
+    }
+    
 }

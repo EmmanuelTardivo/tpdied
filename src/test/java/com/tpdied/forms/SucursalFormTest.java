@@ -52,7 +52,7 @@ public class SucursalFormTest {
 
     @Test
     public void testValidarSucursal_InvalidNombre_TooLong() {
-        String nombre = "Sucursal A con un nombre demasiado largo que supera los 255 caracteres permitidos, Sucursal A con un nombre demasiado largo que supera los 255 caracteres permitidos, Sucursal A con un nombre demasiado largo que supera los 255 caracteres permitidos, Sucursal A con un nombre demasiado largo que supera los 255 caracteres permitidos";
+        String nombre = "Sucursal A con un nombre demasiado largo que supera los 255 caracteres permitidos".repeat(4);
         String horaApertura = "08:00";
         String horaCierre = "18:00";
         Boolean estado = true;

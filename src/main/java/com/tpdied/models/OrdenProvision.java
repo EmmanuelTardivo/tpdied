@@ -40,20 +40,16 @@ public class OrdenProvision implements Eliminable {
     private Integer limiteHoras;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "estado_orden", columnDefinition = "VARCHAR(15) CHECK (estado_orden IN ('PENDIENTE', 'EN_PROCESO', 'COMPLETADO')) DEFAUTL 'PENDIENTE'")
-    private EstadoOrden estado = EstadoOrden.PENDIENTE;
+    @Column(name = "estado_orden", columnDefinition = "VARCHAR(15) CHECK (estado_orden IN ('PENDIENTE', 'EN_PROCESO', 'COMPLETADO'))")
+    private EstadoOrden estado;
 
     @ElementCollection
-    @CollectionTable(
-        name = "item_orden",
-        joinColumns = @JoinColumn(name = "id_orden"),
-        foreignKey = @ForeignKey(name = "ITEM_ORDEN_FK")
-    )
+    @CollectionTable(name = "item_orden", joinColumns = @JoinColumn(name = "id_orden"), foreignKey = @ForeignKey(name = "ITEM_ORDEN_FK"))
     @MapKeyJoinColumn(name = "id_producto", foreignKey = @ForeignKey(name = "ITEM_PRODUCTO_FK"))
     @Column(name = "cantidad")
     private Map<Producto, Integer> itemsProductoCantidad = new HashMap<>();
 
-    @Column(name = "eliminado", columnDefinition = "BIT(1) DEFAULT 0")
+    @Column(name = "eliminado", columnDefinition = "BOOLEAN DEFAULT false")
     private Boolean eliminado = false;
 
     public Integer getId() {
@@ -96,13 +92,16 @@ public class OrdenProvision implements Eliminable {
         this.estado = estado;
     }
 
+    
+
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((fechaOrden == null) ? 0 : fechaOrden.hashCode());
         result = prime * result + ((sucursalDestino == null) ? 0 : sucursalDestino.hashCode());
+        result = prime * result + ((limiteHoras == null) ? 0 : limiteHoras.hashCode());
+        result = prime * result + ((itemsProductoCantidad == null) ? 0 : itemsProductoCantidad.hashCode());
         return result;
     }
 
@@ -125,15 +124,18 @@ public class OrdenProvision implements Eliminable {
                 return false;
         } else if (!sucursalDestino.equals(other.sucursalDestino))
             return false;
+        if (limiteHoras == null) {
+            if (other.limiteHoras != null)
+                return false;
+        } else if (!limiteHoras.equals(other.limiteHoras))
+            return false;
+        if (itemsProductoCantidad == null) {
+            if (other.itemsProductoCantidad != null)
+                return false;
+        } else if (!itemsProductoCantidad.equals(other.itemsProductoCantidad))
+            return false;
         return true;
     }
-
-    @Override
-    public String toString() {
-        return "OrdenProvision [id=" + id + ", fechaOrden=" + fechaOrden + ", sucursalDestino=" + sucursalDestino.getNombre()
-                + ", limiteHoras=" + limiteHoras + ", estado=" + estado + "]";
-    }
-
 
     public Map<Producto, Integer> getItemsProductoCantidad() {
         return itemsProductoCantidad;
@@ -154,5 +156,5 @@ public class OrdenProvision implements Eliminable {
     public void setItemsProductoCantidad(Map<Producto, Integer> itemsProductoCantidad) {
         this.itemsProductoCantidad = itemsProductoCantidad;
     }
-    
+
 }
