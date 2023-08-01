@@ -16,5 +16,5 @@ public interface Dao<T extends Eliminable> {
 
 	void delete(T t);
 	
-	T findEqual(T t);
+	T findEqualEliminado(T t);
 }
