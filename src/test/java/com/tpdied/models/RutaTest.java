@@ -2,6 +2,8 @@ package com.tpdied.models;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.time.Duration;
 import java.time.LocalTime;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,7 +28,7 @@ class RutaTest {
         ruta.setSucursalOrigen(sucursalOrigenMock);
         ruta.setSucursalDestino(sucursalDestinoMock);
         ruta.setCapacidadEnKilos(1000.0);
-        ruta.setDuracionViaje(LocalTime.of(2, 30));
+        ruta.setDuracionViaje(Duration.ofHours(2).plusMinutes(30));
         ruta.setEstado(true);
     }
 
@@ -112,7 +114,7 @@ class RutaTest {
         otraRuta.setSucursalOrigen(new Sucursal());
         otraRuta.setSucursalDestino(new Sucursal());
         otraRuta.setCapacidadEnKilos(2000.0);
-        otraRuta.setDuracionViaje(LocalTime.of(3, 0));
+        otraRuta.setDuracionViaje(Duration.ofHours(3));
         otraRuta.setEstado(false);
 
         assertNotEquals(ruta, otraRuta);
@@ -131,7 +133,7 @@ class RutaTest {
         otraRuta.setSucursalOrigen(new Sucursal());
         otraRuta.setSucursalDestino(new Sucursal());
         otraRuta.setCapacidadEnKilos(2000.0);
-        otraRuta.setDuracionViaje(LocalTime.of(3, 0));
+        otraRuta.setDuracionViaje(Duration.ofHours(3));
         otraRuta.setEstado(false);
 
         assertNotEquals(ruta.hashCode(), otraRuta.hashCode());
@@ -143,7 +145,7 @@ class RutaTest {
         otraRuta.setSucursalOrigen(sucursalOrigenMock);
         otraRuta.setSucursalDestino(sucursalDestinoMock);
         otraRuta.setCapacidadEnKilos(1000.0);
-        otraRuta.setDuracionViaje(LocalTime.of(2, 30));
+        otraRuta.setDuracionViaje(Duration.ofHours(2).plusMinutes(30));
         otraRuta.setEstado(true);
         return otraRuta;
     }

@@ -55,12 +55,12 @@ public class SucursalMapper {
                 ));
     }
 
-    private static Map<Producto, Integer> stockProductosToEntity(Map<ProductoDTO, Integer> listaProductoCantidadEnStockDTO) {
+    private static Map<Producto, Integer> stockProductosToEntity(
+            Map<ProductoDTO, Integer> listaProductoCantidadEnStockDTO) {
         return listaProductoCantidadEnStockDTO.entrySet().stream()
                 .collect(Collectors.toMap(
                         entry -> ProductoMapper.toEntity(entry.getKey()), // Mapear ProductoDTO a Producto
                         Map.Entry::getValue // Obtener el Integer del Map original como value
                 ));
     }
-    
 }

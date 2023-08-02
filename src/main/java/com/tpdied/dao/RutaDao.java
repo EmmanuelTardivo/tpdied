@@ -19,7 +19,7 @@ public class RutaDao extends AbstractDao<Ruta> {
     public List<Ruta> getBySucursalOrigen(Sucursal origen) {
         String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = false AND r.sucursalOrigen = :origen";
         TypedQuery<Ruta> query = getEntityManager().createQuery(qlString, Ruta.class);
-        query.setParameter("origen", origen.getId());
+        query.setParameter("origen", origen);
         return query.getResultList();
     }
 
@@ -45,7 +45,7 @@ public class RutaDao extends AbstractDao<Ruta> {
     }
 
     public List<Ruta> getByEstado(Boolean estado) {
-        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = false AND r.estado_ruta = :estado";
+        String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = false AND r.estado = :estado";
         TypedQuery<Ruta> query = getEntityManager().createQuery(qlString, Ruta.class);
         query.setParameter("estado", estado);
         return query.getResultList();

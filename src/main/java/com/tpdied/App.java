@@ -17,6 +17,7 @@ import com.tpdied.forms.OrdenProvisionForm;
 import com.tpdied.forms.ProductoForm;
 import com.tpdied.forms.RutaForm;
 import com.tpdied.forms.SucursalForm;
+import com.tpdied.managers.OrdenProvisionManager;
 import com.tpdied.util.EntityManagerUtil;
 
 import jakarta.persistence.EntityManager;
@@ -145,7 +146,8 @@ public class App {
             r8 = RutaForm.validarRuta("30", sc.getSucursalByName("G"), sc.getSucursalByName("E"), "02:30", true);
             r9 = RutaForm.validarRuta("40", sc.getSucursalByName("Puerto"), sc.getSucursalByName("B"), "03:00", true);
             r10 = RutaForm.validarRuta("40", sc.getSucursalByName("B"), sc.getSucursalByName("D"), "01:00", true);
-            r11 = RutaForm.validarRuta("40", sc.getSucursalByName("G"), sc.getSucursalByName("Casa Central"), "04:00", true);
+            r11 = RutaForm.validarRuta("40", sc.getSucursalByName("G"), sc.getSucursalByName("Casa Central"), "04:00",
+                    true);
             r12 = RutaForm.validarRuta("50", sc.getSucursalByName("Puerto"), sc.getSucursalByName("X"), "02:30", true);
             r13 = RutaForm.validarRuta("50", sc.getSucursalByName("X"), sc.getSucursalByName("Y"), "03:30", true);
             r14 = RutaForm.validarRuta("50", sc.getSucursalByName("Y"), sc.getSucursalByName("Z"), "01:00", true);
@@ -153,12 +155,13 @@ public class App {
             r16 = RutaForm.validarRuta("60", sc.getSucursalByName("X"), sc.getSucursalByName("C"), "02:15", true);
             r17 = RutaForm.validarRuta("60", sc.getSucursalByName("C"), sc.getSucursalByName("D"), "03:15", true);
             r18 = RutaForm.validarRuta("60", sc.getSucursalByName("D"), sc.getSucursalByName("E"), "02:45", true);
-            r19 = RutaForm.validarRuta("60", sc.getSucursalByName("E"), sc.getSucursalByName("Casa Central"), "01:00", true);
-            
+            r19 = RutaForm.validarRuta("60", sc.getSucursalByName("E"), sc.getSucursalByName("Casa Central"), "01:00",
+                    true);
+
             rutas = List.of(r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19);
 
         } catch (Exception e) {
-            System.out.println("error: " + e.getMessage());
+            System.out.println("error rutas: " + e.getMessage());
         }
         rutas.forEach(r -> rc.addRuta(r));
 
@@ -167,18 +170,18 @@ public class App {
         OrdenProvisionDTO o1 = null;
         OrdenProvisionDTO o2 = null;
 
-        Map<ProductoDTO,Integer> listaProductos = new HashMap<ProductoDTO,Integer>();
-        listaProductos.put(pc.getProductoByName("Producto 1"),4);
-        listaProductos.put(pc.getProductoByName("Producto 2"),8);
-        listaProductos.put(pc.getProductoByName("Producto 1"),5);
-        
+        Map<ProductoDTO, Integer> listaProductos = new HashMap<ProductoDTO, Integer>();
+        listaProductos.put(pc.getProductoByName("Producto 1"), 4);
+        listaProductos.put(pc.getProductoByName("Producto 2"), 8);
+        listaProductos.put(pc.getProductoByName("Producto 1"), 5);
+
         try {
-            o1 = OrdenProvisionForm.validarOrdenProvision(sc.getSucursalByName("B"),"48",listaProductos);
-            o2 = OrdenProvisionForm.validarOrdenProvision(sc.getSucursalByName("X"),"32",listaProductos);     
+            o1 = OrdenProvisionForm.validarOrdenProvision(sc.getSucursalByName("B"), "48:30", listaProductos);
+            o2 = OrdenProvisionForm.validarOrdenProvision(sc.getSucursalByName("X"), "32:00", listaProductos);
         } catch (Exception e) {
-            System.out.println("error: " + e.getMessage());
+            System.out.println("error ordenes: " + e.getMessage());
         }
-       
+
         oc.addOrdenProvision(o1);
         oc.addOrdenProvision(o2);
         List<OrdenProvisionDTO> ordenes = oc.getOrdenesProvisionPendientes();
@@ -187,5 +190,6 @@ public class App {
         System.out.println(oc.getAllOrdenesProvision());
         System.out.println(oc.getOrdenesProvisionPendientes());
 
+        System.out.println();        
     }
 }

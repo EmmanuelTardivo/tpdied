@@ -100,5 +100,4 @@ public class SucursalDTO {
         return "SucursalDTO [id=" + id + ", horaApertura=" + horaApertura + ", horaCierre=" + horaCierre + ", nombre="
                 + nombre + ", estado=" + estadoToString() + "]";
     }
-
 }

@@ -1,5 +1,6 @@
 package com.tpdied.models;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,8 +37,8 @@ public class OrdenProvision implements Eliminable {
     @JoinColumn(name = "id_destino", foreignKey = @ForeignKey(name = "ORDEN_SUCURSAL_FK"))
     private Sucursal sucursalDestino;
 
-    @Column(name = "limite_horas")
-    private Integer limiteHoras;
+    @Column(name = "limite_tiempo")
+    private Duration limiteTiempo;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "estado_orden", columnDefinition = "VARCHAR(15) CHECK (estado_orden IN ('PENDIENTE', 'EN_PROCESO', 'COMPLETADO'))")
@@ -76,12 +77,12 @@ public class OrdenProvision implements Eliminable {
         this.sucursalDestino = sucursalDestino;
     }
 
-    public Integer getLimiteHoras() {
-        return limiteHoras;
+    public Duration getLimiteTiempo() {
+        return limiteTiempo;
     }
 
-    public void setLimiteHoras(Integer limiteHoras) {
-        this.limiteHoras = limiteHoras;
+    public void setLimiteTiempo(Duration limiteTiempo) {
+        this.limiteTiempo = limiteTiempo;
     }
 
     public EstadoOrden getEstado() {
@@ -92,7 +93,20 @@ public class OrdenProvision implements Eliminable {
         this.estado = estado;
     }
 
-    
+    @Override
+    public String toString() {
+        return "OrdenProvision [id=" + id + ", fechaOrden=" + fechaOrden + ", sucursalDestino=" + sucursalDestino
+                + ", limiteTiempo=" + formatDuration(limiteTiempo) + ", estado=" + estado + ", itemsProductoCantidad="
+                + itemsProductoCantidad + "]";
+    }
+
+    private static String formatDuration(Duration duration) {
+        long totalMinutes = duration.toMinutes();
+        long hours = totalMinutes / 60;
+        long minutes = totalMinutes % 60;
+
+        return String.format("%02d:%02d", hours, minutes);
+    }
 
     @Override
     public int hashCode() {
@@ -100,7 +114,7 @@ public class OrdenProvision implements Eliminable {
         int result = 1;
         result = prime * result + ((fechaOrden == null) ? 0 : fechaOrden.hashCode());
         result = prime * result + ((sucursalDestino == null) ? 0 : sucursalDestino.hashCode());
-        result = prime * result + ((limiteHoras == null) ? 0 : limiteHoras.hashCode());
+        result = prime * result + ((limiteTiempo == null) ? 0 : limiteTiempo.hashCode());
         result = prime * result + ((itemsProductoCantidad == null) ? 0 : itemsProductoCantidad.hashCode());
         return result;
     }
@@ -124,10 +138,10 @@ public class OrdenProvision implements Eliminable {
                 return false;
         } else if (!sucursalDestino.equals(other.sucursalDestino))
             return false;
-        if (limiteHoras == null) {
-            if (other.limiteHoras != null)
+        if (limiteTiempo == null) {
+            if (other.limiteTiempo != null)
                 return false;
-        } else if (!limiteHoras.equals(other.limiteHoras))
+        } else if (!limiteTiempo.equals(other.limiteTiempo))
             return false;
         if (itemsProductoCantidad == null) {
             if (other.itemsProductoCantidad != null)

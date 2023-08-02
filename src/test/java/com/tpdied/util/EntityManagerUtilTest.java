@@ -14,6 +14,7 @@ import jakarta.persistence.Query;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.Duration;
 import java.time.LocalTime;
 
 public class EntityManagerUtilTest {
@@ -110,7 +111,7 @@ public class EntityManagerUtilTest {
         // Insertar datos en la tabla Ruta
         Ruta ruta1 = new Ruta();
         ruta1.setCapacidadEnKilos(1000.0);
-        ruta1.setDuracionViaje(LocalTime.of(4, 30));
+        ruta1.setDuracionViaje(Duration.ofHours(4).plusMinutes(30));
         ruta1.setEstado(true);
         ruta1.setSucursalOrigen(sucursal1);
         ruta1.setSucursalDestino(sucursal1);

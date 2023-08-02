@@ -81,4 +81,9 @@ public class RutaController {
         Ruta ruta = (RutaMapper.toEntity(dto));
         rutaDao.delete(ruta);
     }
+    
+    public void setRutasNoOperativa(SucursalDTO sucursal) {
+        getRutasBySucursalDestino(sucursal).forEach(r -> setRutaNoOperativa(r));
+        getRutasBySucursalOrigen(sucursal).forEach(r -> setRutaNoOperativa(r));
+    }
 }

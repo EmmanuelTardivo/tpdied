@@ -5,6 +5,7 @@ import com.tpdied.dto.ProductoDTO;
 import com.tpdied.dto.SucursalDTO;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class OrdenProvisionFormTest {
         // Arrange
         SucursalDTO sucursalDestino = new SucursalDTO();
         sucursalDestino.setId(1);
-        String limiteHoras = "2";
+        String limiteHoras = "02:00";
         Map<ProductoDTO, Integer> itemsProductoCantidad = new HashMap<>();
         ProductoDTO productoDTO = new ProductoDTO();
         productoDTO.setId(1);
@@ -30,7 +31,7 @@ public class OrdenProvisionFormTest {
         // Assert
         assertNotNull(result);
         assertNotNull(result.getFechaOrden());
-        assertEquals(Integer.parseInt(limiteHoras), result.getLimiteHoras());
+        assertEquals(LocalTime.parse(limiteHoras), result.getLimiteTiempo());
         assertEquals(sucursalDestino, result.getSucursalDestino());
         assertEquals(itemsProductoCantidad, result.getItemsProductoCantidad());
     }

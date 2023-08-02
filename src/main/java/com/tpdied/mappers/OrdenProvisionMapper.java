@@ -21,7 +21,7 @@ public class OrdenProvisionMapper {
                 .collect(Collectors.toMap(
                         entry -> ProductoMapper.toEntity(entry.getKey()), Map.Entry::getValue));
         orden.setItemsProductoCantidad(items);
-        orden.setLimiteHoras(ordenDTO.getLimiteHoras());
+        orden.setLimiteTiempo(ordenDTO.getLimiteTiempo());
         orden.setEstado(ordenDTO.getEstado());
 
         return orden;
@@ -38,7 +38,7 @@ public class OrdenProvisionMapper {
                 .collect(Collectors.toMap(
                         entry -> ProductoMapper.toDto(entry.getKey()), Map.Entry::getValue));
         ordenDTO.setItemsProductoCantidad(items);
-        ordenDTO.setLimiteHoras(orden.getLimiteHoras());
+        ordenDTO.setLimiteTiempo(orden.getLimiteTiempo());
         ordenDTO.setEstado(orden.getEstado());
 
         return ordenDTO;

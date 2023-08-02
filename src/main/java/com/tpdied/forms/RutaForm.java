@@ -1,7 +1,6 @@
 package com.tpdied.forms;
 
-import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
+import java.time.Duration;
 
 import com.tpdied.dto.RutaDTO;
 import com.tpdied.dto.SucursalDTO;
@@ -27,7 +26,7 @@ public class RutaForm {
     public static RutaDTO validarRuta(String capacidadEnKilos, SucursalDTO sucursalOrigen, SucursalDTO sucursalDestino,
             String duracionViaje, Boolean estado) {
         double capacidadDouble = validarCapacidadEnKilos(capacidadEnKilos);
-        LocalTime duracionViajeTime = validarDuracionViaje(duracionViaje);
+        Duration duracionViajeTime = validarDuracionViaje(duracionViaje);
 
         RutaDTO result = new RutaDTO();
         result.setCapacidadEnKilos(capacidadDouble);
@@ -42,7 +41,6 @@ public class RutaForm {
         if (capacidadEnKilos == null || capacidadEnKilos.isEmpty()) {
             throw new IllegalArgumentException("La capacidad en kilos no puede ser nula o vacía.");
         }
-
         try {
             double capacidadDouble = Double.parseDouble(capacidadEnKilos);
             if (capacidadDouble < 0.0) {
@@ -54,15 +52,17 @@ public class RutaForm {
         }
     }
 
-    private static LocalTime validarDuracionViaje(String duracionViaje) {
+    private static Duration validarDuracionViaje(String duracionViaje) {
         if (duracionViaje == null || duracionViaje.trim().isEmpty()) {
             throw new IllegalArgumentException("La duración del viaje no puede ser nula o vacía.");
         }
-
-        try {
-            return LocalTime.parse(duracionViaje);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("La duración del viaje debe tener un formato de hora válido (HH:mm).");
+        String[] partes = duracionViaje.split(":");
+        if (partes.length != 2) {
+            throw new IllegalArgumentException("El límite de tiempo debe tener un formato de hora válido (HH:mm).");
         }
+        int horas = Integer.parseInt(partes[0]);
+        int minutos = Integer.parseInt(partes[1]);
+    
+        return Duration.ofHours(horas).plusMinutes(minutos);
     }
 }

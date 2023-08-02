@@ -1,5 +1,6 @@
 package com.tpdied.dto;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -11,7 +12,7 @@ public class OrdenProvisionDTO {
     private Integer id;
     private LocalDateTime fechaOrden;
     private SucursalDTO sucursalDestino;
-    private Integer limiteHoras;
+    private Duration limiteTiempo;
     private Map<ProductoDTO, Integer> itemsProductoCantidad;
     private EstadoOrden estado;
 
@@ -39,12 +40,12 @@ public class OrdenProvisionDTO {
         this.sucursalDestino = sucursalDestino;
     }
 
-    public Integer getLimiteHoras() {
-        return limiteHoras;
+    public Duration getLimiteTiempo() {
+        return limiteTiempo;
     }
 
-    public void setLimiteHoras(Integer limiteHoras) {
-        this.limiteHoras = limiteHoras;
+    public void setLimiteTiempo(Duration limiteTiempo) {
+        this.limiteTiempo = limiteTiempo;
     }
 
     public EstadoOrden getEstado() {
@@ -69,7 +70,7 @@ public class OrdenProvisionDTO {
         int result = 1;
         result = prime * result + ((fechaOrden == null) ? 0 : fechaOrden.hashCode());
         result = prime * result + ((sucursalDestino == null) ? 0 : sucursalDestino.hashCode());
-        result = prime * result + ((limiteHoras == null) ? 0 : limiteHoras.hashCode());
+        result = prime * result + ((limiteTiempo == null) ? 0 : limiteTiempo.hashCode());
         result = prime * result + ((itemsProductoCantidad == null) ? 0 : itemsProductoCantidad.hashCode());
         return result;
     }
@@ -93,10 +94,10 @@ public class OrdenProvisionDTO {
                 return false;
         } else if (!sucursalDestino.equals(other.sucursalDestino))
             return false;
-        if (limiteHoras == null) {
-            if (other.limiteHoras != null)
+        if (limiteTiempo == null) {
+            if (other.limiteTiempo != null)
                 return false;
-        } else if (!limiteHoras.equals(other.limiteHoras))
+        } else if (!limiteTiempo.equals(other.limiteTiempo))
             return false;
         if (itemsProductoCantidad == null) {
             if (other.itemsProductoCantidad != null)
@@ -108,11 +109,18 @@ public class OrdenProvisionDTO {
 
     @Override
     public String toString() {
-        return "OrdenProvisionDTO [id=" + id + ", fechaOrden=" + fechaOrden.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + ", sucursalDestino=" + sucursalDestino
-                + ", limiteHoras=" + limiteHoras + ", itemsProductoCantidad=" + itemsProductoCantidad + ", estado="
+        return "OrdenProvisionDTO [id=" + id + ", fechaOrden="
+                + fechaOrden.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + ", sucursalDestino="
+                + sucursalDestino
+                + ", limiteHoras=" + formatDuration(limiteTiempo) + ", itemsProductoCantidad=" + itemsProductoCantidad + ", estado="
                 + estado + "]";
     }
 
-    
+    private static String formatDuration(Duration duration) {
+        long totalMinutes = duration.toMinutes();
+        long hours = totalMinutes / 60;
+        long minutes = totalMinutes % 60;
 
+        return String.format("%02d:%02d", hours, minutes);
+    }
 }

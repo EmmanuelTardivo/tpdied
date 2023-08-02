@@ -1,6 +1,6 @@
 package com.tpdied.models;
 
-import java.time.LocalTime;
+import java.time.Duration;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -16,9 +16,9 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "ruta")
 public class Ruta implements Eliminable {
-    
+
     @Id
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_ruta")
     private Integer id;
 
@@ -29,13 +29,13 @@ public class Ruta implements Eliminable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_destino", foreignKey = @ForeignKey(name = "RUTA_DESTINO_FK"))
     private Sucursal sucursalDestino;
-    
+
     @Column(name = "capacidad_en_kilos")
     private Double capacidadEnKilos;
-    
+
     @Column(name = "duracion_viaje")
-    private LocalTime duracionViaje;
-    
+    private Duration duracionViaje;
+
     @Column(name = "estado_ruta")
     private Boolean estado; // operativo true, no operativo false
 
@@ -74,11 +74,11 @@ public class Ruta implements Eliminable {
         this.capacidadEnKilos = capacidadEnKilos;
     }
 
-    public LocalTime getDuracionViaje() {
+    public Duration getDuracionViaje() {
         return duracionViaje;
     }
 
-    public void setDuracionViaje(LocalTime duracionViaje) {
+    public void setDuracionViaje(Duration duracionViaje) {
         this.duracionViaje = duracionViaje;
     }
 
@@ -139,9 +139,18 @@ public class Ruta implements Eliminable {
 
     @Override
     public String toString() {
-        return "Ruta [id=" + id + ", sucursalOrigen=" + sucursalOrigen.getNombre() + ", sucursalDestino=" + sucursalDestino.getNombre()
-                + ", capacidadEnKilos=" + capacidadEnKilos + ", duracionViaje=" + duracionViaje + ", estado=" + estadoToString()
+        return "Ruta [id=" + id + ", sucursalOrigen=" + sucursalOrigen.getNombre() + ", sucursalDestino="
+                + sucursalDestino.getNombre()
+                + ", capacidadEnKilos=" + capacidadEnKilos + ", duracionViaje=" + formatDuration(duracionViaje) + ", estado=" + estadoToString()
                 + "]";
+    }
+
+    private static String formatDuration(Duration duration) {
+        long totalMinutes = duration.toMinutes();
+        long hours = totalMinutes / 60;
+        long minutes = totalMinutes % 60;
+
+        return String.format("%02d:%02d", hours, minutes);
     }
 
     public Boolean getEliminado() {
@@ -152,5 +161,11 @@ public class Ruta implements Eliminable {
         this.eliminado = eliminado;
     }
 
-    
+    public boolean isSucursalOrigenActiva() {
+        return getSucursalOrigen().getEstado();
+    }
+
+    public boolean isSucursalDestinoActiva() {
+        return getSucursalDestino().getEstado();
+    }
 }

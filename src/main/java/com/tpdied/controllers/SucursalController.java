@@ -22,6 +22,7 @@ import jakarta.persistence.EntityManager;
 public class SucursalController {
 
     private SucursalDao sucursalDao;
+    private RutaController rutaController;
 
     /**
      * Crea una nueva instancia de SucursalController con el EntityManager
@@ -32,6 +33,7 @@ public class SucursalController {
      */
     public SucursalController(EntityManager entityManager) {
         sucursalDao = new SucursalDao(entityManager);
+        rutaController = new RutaController(entityManager);
     }
 
     /**
@@ -208,5 +210,6 @@ public class SucursalController {
         Sucursal sucursal = SucursalMapper.toEntity(sucursalDto);
         sucursal.setEstado(false);
         sucursalDao.update(sucursal);
+        rutaController.setRutasNoOperativa(sucursalDto);
     }
 }

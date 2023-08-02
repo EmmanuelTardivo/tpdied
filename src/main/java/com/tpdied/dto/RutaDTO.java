@@ -1,6 +1,6 @@
 package com.tpdied.dto;
 
-import java.time.LocalTime;
+import java.time.Duration;
 
 public class RutaDTO {
 
@@ -8,7 +8,7 @@ public class RutaDTO {
     private SucursalDTO sucursalOrigen;
     private SucursalDTO sucursalDestino;
     private Double capacidadEnKilos;
-    private LocalTime duracionViaje;
+    private Duration duracionViaje;
     private Boolean estado;
 
     public Integer getId() {
@@ -43,11 +43,11 @@ public class RutaDTO {
         this.capacidadEnKilos = capacidadEnKilos;
     }
 
-    public LocalTime getDuracionViaje() {
+    public Duration getDuracionViaje() {
         return duracionViaje;
     }
 
-    public void setDuracionViaje(LocalTime duracionViaje) {
+    public void setDuracionViaje(Duration duracionViaje) {
         this.duracionViaje = duracionViaje;
     }
 
@@ -110,9 +110,16 @@ public class RutaDTO {
     public String toString() {
         return "Ruta [id=" + id + ", sucursalOrigen=" + sucursalOrigen.getNombre() + ", sucursalDestino="
                 + sucursalDestino.getNombre()
-                + ", capacidadEnKilos=" + capacidadEnKilos + ", duracionViaje=" + duracionViaje + ", estado="
+                + ", capacidadEnKilos=" + capacidadEnKilos + ", duracionViaje=" + formatDuration(duracionViaje) + ", estado="
                 + estadoToString()
                 + "]";
     }
 
+    private static String formatDuration(Duration duration) {
+        long totalMinutes = duration.toMinutes();
+        long hours = totalMinutes / 60;
+        long minutes = totalMinutes % 60;
+
+        return String.format("%02d:%02d", hours, minutes);
+    }
 }
