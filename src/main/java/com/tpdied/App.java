@@ -198,6 +198,11 @@ public class App {
         OrdenProvisionManager om = new OrdenProvisionManager(entityManager);
         System.out.println("Caminos Posibles:");
         System.out.println(om.getCaminosPosibles(o1));
+
+        System.out.println("Flujo Máximo:");
+        System.out.println(om.calcularFlujoMaximo(sc.getSucursalByName("Puerto"),sc.getSucursalByName("Casa Central")));
         
+        System.out.println("Page Rank");
+        System.out.println(om.calcularPageRank(0.5, 1, 1));
     }
 }

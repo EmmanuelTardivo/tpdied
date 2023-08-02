@@ -10,6 +10,15 @@ public class RutaDTO {
     private Double capacidadEnKilos;
     private Duration duracionViaje;
     private Boolean estado;
+    private Double flujo;
+
+    public Double getFlujo() {
+        return flujo;
+    }
+
+    public void setFlujo(Double flujo) {
+        this.flujo = flujo;
+    }
 
     public Integer getId() {
         return id;
