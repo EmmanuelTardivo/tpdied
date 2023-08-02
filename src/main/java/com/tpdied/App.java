@@ -136,26 +136,26 @@ public class App {
 
         List<RutaDTO> rutas = new ArrayList<RutaDTO>();
         try {
-            r1 = RutaForm.validarRuta("10", sc.getSucursalByName("B"), sc.getSucursalByName("C"), "02:30", true);
-            r2 = RutaForm.validarRuta("10", sc.getSucursalByName("D"), sc.getSucursalByName("F"), "02:00", true);
-            r3 = RutaForm.validarRuta("10", sc.getSucursalByName("X"), sc.getSucursalByName("G"), "02:45", true);
-            r4 = RutaForm.validarRuta("10", sc.getSucursalByName("F"), sc.getSucursalByName("Y"), "01:00", true);
-            r5 = RutaForm.validarRuta("20", sc.getSucursalByName("Puerto"), sc.getSucursalByName("C"), "02:00", true);
-            r6 = RutaForm.validarRuta("20", sc.getSucursalByName("C"), sc.getSucursalByName("F"), "02:00", true);
-            r7 = RutaForm.validarRuta("20", sc.getSucursalByName("F"), sc.getSucursalByName("G"), "01:30", true);
-            r8 = RutaForm.validarRuta("30", sc.getSucursalByName("G"), sc.getSucursalByName("E"), "02:30", true);
-            r9 = RutaForm.validarRuta("40", sc.getSucursalByName("Puerto"), sc.getSucursalByName("B"), "03:00", true);
-            r10 = RutaForm.validarRuta("40", sc.getSucursalByName("B"), sc.getSucursalByName("D"), "01:00", true);
-            r11 = RutaForm.validarRuta("40", sc.getSucursalByName("G"), sc.getSucursalByName("Casa Central"), "04:00",
+            r1 = RutaForm.validarRuta("600", sc.getSucursalByName("B"), sc.getSucursalByName("C"), "02:30", true);
+            r2 = RutaForm.validarRuta("600", sc.getSucursalByName("D"), sc.getSucursalByName("F"), "02:00", true);
+            r3 = RutaForm.validarRuta("600", sc.getSucursalByName("X"), sc.getSucursalByName("G"), "02:45", true);
+            r4 = RutaForm.validarRuta("600", sc.getSucursalByName("F"), sc.getSucursalByName("Y"), "01:00", true);
+            r5 = RutaForm.validarRuta("500", sc.getSucursalByName("Puerto"), sc.getSucursalByName("C"), "02:00", true);
+            r6 = RutaForm.validarRuta("500", sc.getSucursalByName("C"), sc.getSucursalByName("F"), "02:00", true);
+            r7 = RutaForm.validarRuta("500", sc.getSucursalByName("F"), sc.getSucursalByName("G"), "01:30", true);
+            r8 = RutaForm.validarRuta("400", sc.getSucursalByName("G"), sc.getSucursalByName("E"), "02:30", true);
+            r9 = RutaForm.validarRuta("300", sc.getSucursalByName("Puerto"), sc.getSucursalByName("B"), "03:00", true);
+            r10 = RutaForm.validarRuta("300", sc.getSucursalByName("B"), sc.getSucursalByName("D"), "01:00", true);
+            r11 = RutaForm.validarRuta("300", sc.getSucursalByName("G"), sc.getSucursalByName("Casa Central"), "04:00",
                     true);
-            r12 = RutaForm.validarRuta("50", sc.getSucursalByName("Puerto"), sc.getSucursalByName("X"), "02:30", true);
-            r13 = RutaForm.validarRuta("50", sc.getSucursalByName("X"), sc.getSucursalByName("Y"), "03:30", true);
-            r14 = RutaForm.validarRuta("50", sc.getSucursalByName("Y"), sc.getSucursalByName("Z"), "01:00", true);
-            r15 = RutaForm.validarRuta("60", sc.getSucursalByName("Z"), sc.getSucursalByName("D"), "01:30", true);
-            r16 = RutaForm.validarRuta("60", sc.getSucursalByName("X"), sc.getSucursalByName("C"), "02:15", true);
-            r17 = RutaForm.validarRuta("60", sc.getSucursalByName("C"), sc.getSucursalByName("D"), "03:15", true);
-            r18 = RutaForm.validarRuta("60", sc.getSucursalByName("D"), sc.getSucursalByName("E"), "02:45", true);
-            r19 = RutaForm.validarRuta("60", sc.getSucursalByName("E"), sc.getSucursalByName("Casa Central"), "01:00",
+            r12 = RutaForm.validarRuta("200", sc.getSucursalByName("Puerto"), sc.getSucursalByName("X"), "02:30", true);
+            r13 = RutaForm.validarRuta("200", sc.getSucursalByName("X"), sc.getSucursalByName("Y"), "03:30", true);
+            r14 = RutaForm.validarRuta("200", sc.getSucursalByName("Y"), sc.getSucursalByName("Z"), "01:00", true);
+            r15 = RutaForm.validarRuta("100", sc.getSucursalByName("Z"), sc.getSucursalByName("Casa Central"), "01:30", true);
+            r16 = RutaForm.validarRuta("100", sc.getSucursalByName("X"), sc.getSucursalByName("C"), "02:15", true);
+            r17 = RutaForm.validarRuta("100", sc.getSucursalByName("C"), sc.getSucursalByName("D"), "03:15", true);
+            r18 = RutaForm.validarRuta("100", sc.getSucursalByName("D"), sc.getSucursalByName("E"), "02:45", true);
+            r19 = RutaForm.validarRuta("100", sc.getSucursalByName("E"), sc.getSucursalByName("Casa Central"), "01:00",
                     true);
 
             rutas = List.of(r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19);
@@ -176,7 +176,7 @@ public class App {
         listaProductos.put(pc.getProductoByName("Producto 1"), 5);
 
         try {
-            o1 = OrdenProvisionForm.validarOrdenProvision(sc.getSucursalByName("B"), "48:30", listaProductos);
+            o1 = OrdenProvisionForm.validarOrdenProvision(sc.getSucursalByName("C"), "48:30", listaProductos);
             o2 = OrdenProvisionForm.validarOrdenProvision(sc.getSucursalByName("X"), "32:00", listaProductos);
         } catch (Exception e) {
             System.out.println("error ordenes: " + e.getMessage());
@@ -190,6 +190,14 @@ public class App {
         System.out.println(oc.getAllOrdenesProvision());
         System.out.println(oc.getOrdenesProvisionPendientes());
 
-        System.out.println();        
+        System.out.println();
+        
+        sc.setStockProducto(sc.getSucursalByName("B"), pc.getProductoByName("Producto 1"), 20);
+        sc.setStockProducto(sc.getSucursalByName("B"), pc.getProductoByName("Producto 2"), 20);
+
+        OrdenProvisionManager om = new OrdenProvisionManager(entityManager);
+        System.out.println("Caminos Posibles:");
+        System.out.println(om.getCaminosPosibles(o1));
+        
     }
 }

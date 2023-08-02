@@ -112,7 +112,8 @@ public class OrdenProvisionDTO {
         return "OrdenProvisionDTO [id=" + id + ", fechaOrden="
                 + fechaOrden.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) + ", sucursalDestino="
                 + sucursalDestino
-                + ", limiteHoras=" + formatDuration(limiteTiempo) + ", itemsProductoCantidad=" + itemsProductoCantidad + ", estado="
+                + ", limiteHoras=" + formatDuration(limiteTiempo) + ", itemsProductoCantidad=" + itemsProductoCantidad
+                + ", estado="
                 + estado + "]";
     }
 
@@ -122,5 +123,9 @@ public class OrdenProvisionDTO {
         long minutes = totalMinutes % 60;
 
         return String.format("%02d:%02d", hours, minutes);
+    }
+
+    public Double getPeso() {
+        return itemsProductoCantidad.entrySet().stream().mapToDouble(i -> i.getValue()).sum();
     }
 }

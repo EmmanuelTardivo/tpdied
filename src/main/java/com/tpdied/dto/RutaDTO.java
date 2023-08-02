@@ -108,7 +108,7 @@ public class RutaDTO {
 
     @Override
     public String toString() {
-        return "Ruta [id=" + id + ", sucursalOrigen=" + sucursalOrigen.getNombre() + ", sucursalDestino="
+        return "Ruta [id=" + id + ", origen = " + sucursalOrigen.getNombre() + ", destino = "
                 + sucursalDestino.getNombre()
                 + ", capacidadEnKilos=" + capacidadEnKilos + ", duracionViaje=" + formatDuration(duracionViaje) + ", estado="
                 + estadoToString()
