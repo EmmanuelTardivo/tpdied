@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.tpdied.controllers.RutaController;
 import com.tpdied.controllers.SucursalController;
@@ -28,9 +29,9 @@ public class OrdenProvisionManager {
         sucursalController = new SucursalController(entityManager);
     }
 
-    public Set<List<RutaDTO>> getCaminosPosibles(OrdenProvisionDTO orden) {
+    public List<List<RutaDTO>> getCaminosPosibles(OrdenProvisionDTO orden) {
 
-        Set<List<RutaDTO>> caminos = new HashSet<>();
+        List<List<RutaDTO>> caminos = new ArrayList<>();
         SucursalDTO destino = orden.getSucursalDestino();
         Integer limiteTiempoEnMinutos = pasarAMinutos(orden.getLimiteTiempo());
         List<SucursalDTO> sucursalesCandidatas = getOrigenesPosibles(orden);
@@ -170,7 +171,7 @@ public class OrdenProvisionManager {
         Map<SucursalDTO, Integer> gradoSaliente = new HashMap<>();
         List<SucursalDTO> sucursalesOperativas = sucursalController.getSucursalesByEstado(true);
         List<RutaDTO> rutasOperativas = rutaController.getRutasByEstado(true);
-        sucursalesOperativas.forEach(s -> gradoSaliente.put(s, getNumEnlacesSalientes(rutasOperativas,s)));
+        sucursalesOperativas.forEach(s -> gradoSaliente.put(s, getNumEnlacesSalientes(rutasOperativas, s)));
         Double diferenciaMaxima = -Double.MAX_VALUE;
         Double diferenciaActual = -Double.MAX_VALUE;
         int numIteraciones = 0;
@@ -212,5 +213,25 @@ public class OrdenProvisionManager {
         return (int) rutas.stream()
                 .filter(ruta -> ruta.getSucursalOrigen().equals(sucursal))
                 .count();
+    }
+
+    public List<SucursalDTO> getSucursalesDeCamino(List<RutaDTO> rutas) {
+        return rutas.stream()
+                .flatMap(ruta -> Stream.of(ruta.getSucursalOrigen(), ruta.getSucursalDestino()))
+                .collect(Collectors.toList());
+    }
+
+    public String getTiempoTotal(List<RutaDTO> rutas) {
+        return formatDuration(rutas.stream()
+                    .map(ruta -> ruta.getDuracionViaje())
+                    .reduce(Duration.ZERO, Duration::plus));
+    }
+
+    private String formatDuration(Duration duration) {
+        long totalMinutes = duration.toMinutes();
+        long hours = totalMinutes / 60;
+        long minutes = totalMinutes % 60;
+    
+        return String.format("%02d:%02d", hours, minutes);
     }
 }

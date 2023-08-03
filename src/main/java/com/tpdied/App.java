@@ -151,7 +151,8 @@ public class App {
             r12 = RutaForm.validarRuta("200", sc.getSucursalByName("Puerto"), sc.getSucursalByName("X"), "02:30", true);
             r13 = RutaForm.validarRuta("200", sc.getSucursalByName("X"), sc.getSucursalByName("Y"), "03:30", true);
             r14 = RutaForm.validarRuta("200", sc.getSucursalByName("Y"), sc.getSucursalByName("Z"), "01:00", true);
-            r15 = RutaForm.validarRuta("100", sc.getSucursalByName("Z"), sc.getSucursalByName("Casa Central"), "01:30", true);
+            r15 = RutaForm.validarRuta("100", sc.getSucursalByName("Z"), sc.getSucursalByName("Casa Central"), "01:30",
+                    true);
             r16 = RutaForm.validarRuta("100", sc.getSucursalByName("X"), sc.getSucursalByName("C"), "02:15", true);
             r17 = RutaForm.validarRuta("100", sc.getSucursalByName("C"), sc.getSucursalByName("D"), "03:15", true);
             r18 = RutaForm.validarRuta("100", sc.getSucursalByName("D"), sc.getSucursalByName("E"), "02:45", true);
@@ -191,17 +192,51 @@ public class App {
         System.out.println(oc.getOrdenesProvisionPendientes());
 
         System.out.println();
-        
+
         sc.setStockProducto(sc.getSucursalByName("B"), pc.getProductoByName("Producto 1"), 20);
         sc.setStockProducto(sc.getSucursalByName("B"), pc.getProductoByName("Producto 2"), 20);
 
         OrdenProvisionManager om = new OrdenProvisionManager(entityManager);
+        List<List<RutaDTO>> listaCaminos = om.getCaminosPosibles(o1);
         System.out.println("Caminos Posibles:");
-        System.out.println(om.getCaminosPosibles(o1));
+        System.out.println(listaCaminos);
+        System.out.println();
+        System.out.println("Rutas del camino 1:");
+        System.out.println(listaCaminos.get(0));
+        System.out.println("Sucursales del camino 1:");
+        System.out.println(om.getSucursalesDeCamino(listaCaminos.get(0)));
+        System.out.println("Duracion Total:");
+        System.out.println(om.getTiempoTotal(listaCaminos.get(0)));
 
+        System.out.println();
+        System.out.println("Rutas del camino 2:");
+        System.out.println(listaCaminos.get(1));
+        System.out.println("Sucursales del camino 2:");
+        System.out.println(om.getSucursalesDeCamino(listaCaminos.get(1)));
+        System.out.println("Duracion Total:");
+        System.out.println(om.getTiempoTotal(listaCaminos.get(1)));
+
+        System.out.println();
+        System.out.println("Rutas del camino 3:");
+        System.out.println(listaCaminos.get(2));
+        System.out.println("Sucursales del camino 3:");
+        System.out.println(om.getSucursalesDeCamino(listaCaminos.get(2)));
+        System.out.println("Duracion Total:");
+        System.out.println(om.getTiempoTotal(listaCaminos.get(2)));
+
+        System.out.println();
+        System.out.println("Rutas del camino 4:");
+        System.out.println(listaCaminos.get(3));
+        System.out.println("Sucursales del camino 4:");
+        System.out.println(om.getSucursalesDeCamino(listaCaminos.get(3)));
+        System.out.println("Duracion Total:");
+        System.out.println(om.getTiempoTotal(listaCaminos.get(3)));
+
+        System.out.println();
         System.out.println("Flujo Máximo:");
-        System.out.println(om.calcularFlujoMaximo(sc.getSucursalByName("Puerto"),sc.getSucursalByName("Casa Central")));
-        
+        System.out
+                .println(om.calcularFlujoMaximo(sc.getSucursalByName("Puerto"), sc.getSucursalByName("Casa Central")));
+
         System.out.println("Page Rank");
         System.out.println(om.calcularPageRank(0.5, 1, 1));
     }
