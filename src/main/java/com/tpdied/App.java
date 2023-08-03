@@ -172,9 +172,8 @@ public class App {
         OrdenProvisionDTO o2 = null;
 
         Map<ProductoDTO, Integer> listaProductos = new HashMap<ProductoDTO, Integer>();
-        listaProductos.put(pc.getProductoByName("Producto 1"), 4);
+        listaProductos.put(pc.getProductoByName("Producto 1"), 8);
         listaProductos.put(pc.getProductoByName("Producto 2"), 8);
-        listaProductos.put(pc.getProductoByName("Producto 1"), 5);
 
         try {
             o1 = OrdenProvisionForm.validarOrdenProvision(sc.getSucursalByName("C"), "48:30", listaProductos);
