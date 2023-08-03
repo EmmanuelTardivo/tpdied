@@ -19,7 +19,7 @@ public class OrdenProvisionForm {
      * Valida y convierte los datos proporcionados en un objeto OrdenProvisionDTO.
      *
      * @param sucursalDestino       La Sucursal de destino de la OrdenProvision.
-     * @param limiteHoras           El límite de horas de la OrdenProvision como un
+     * @param limiteTiempo           El límite de horas de la OrdenProvision como un
      *                              valor numérico en formato string.
      * @param itemsProductoCantidad Mapa que contiene los productos y su cantidad
      *                              para la OrdenProvision.

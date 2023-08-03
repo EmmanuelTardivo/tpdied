@@ -172,7 +172,7 @@ public class App {
         OrdenProvisionDTO o2 = null;
 
         Map<ProductoDTO, Integer> listaProductos = new HashMap<ProductoDTO, Integer>();
-        listaProductos.put(pc.getProductoByName("Producto 1"), 8);
+        listaProductos.put(pc.getProductoByName("Producto 1"), 4);
         listaProductos.put(pc.getProductoByName("Producto 2"), 8);
 
         try {
