@@ -218,22 +218,24 @@ public class OrdenProvisionManager {
     }
 
     /**
-     * Realiza una búsqueda en profundidad (DFS) para encontrar un camino de aumento desde una sucursal de origen 
+     * Realiza una búsqueda en profundidad (DFS) para encontrar un camino de aumento
+     * desde una sucursal de origen
      * hasta una sucursal sumidero en un grafo de rutas.
      * 
-     * @param actual La SucursalDTO actual en la búsqueda.
-     * @param sumidero La SucursalDTO sumidero.
-     * @param visitados Conjunto de sucursales visitadas en el proceso.
-     * @param camino Lista de RutaDTO representando el camino actual en la búsqueda.
+     * @param actual          La SucursalDTO actual en la búsqueda.
+     * @param sumidero        La SucursalDTO sumidero.
+     * @param visitados       Conjunto de sucursales visitadas en el proceso.
+     * @param camino          Lista de RutaDTO representando el camino actual en la
+     *                        búsqueda.
      * @param rutasOperativas Lista de rutas operativas en el grafo.
-     * @param flujoPorRuta Mapa que contiene el flujo por cada ruta.
+     * @param flujoPorRuta    Mapa que contiene el flujo por cada ruta.
      * @return true si se encontró un camino de aumento, false en caso contrario.
      */
     private boolean DFS(SucursalDTO actual, SucursalDTO sumidero, Set<SucursalDTO> visitados, List<RutaDTO> camino,
             List<RutaDTO> rutasOperativas, Map<RutaDTO, Double> flujoPorRuta) {
         visitados.add(actual);
 
-        if (actual.equals(sumidero)) { //encuentra el camino
+        if (actual.equals(sumidero)) { // encuentra el camino
             return true;
         }
 
@@ -244,7 +246,7 @@ public class OrdenProvisionManager {
                 if (DFS(ruta.getSucursalDestino(), sumidero, visitados, camino, rutasOperativas, flujoPorRuta)) {
                     return true;
                 }
-                camino.remove(ruta);//si no encontró el destino elimina la ruta
+                camino.remove(ruta);// si no encontró el destino elimina la ruta
             }
         }
         return false;
@@ -254,7 +256,7 @@ public class OrdenProvisionManager {
      * Calcula el flujo de aumento en un camino de rutas.
      * 
      * @param caminoDeAumento Lista de RutaDTO representando el camino de aumento.
-     * @param flujoPorRuta Mapa que contiene el flujo por cada ruta.
+     * @param flujoPorRuta    Mapa que contiene el flujo por cada ruta.
      * @return El valor del flujo de aumento en el camino de rutas.
      */
     private double obtenerFlujoDeAumento(List<RutaDTO> caminoDeAumento, Map<RutaDTO, Double> flujoPorRuta) {
@@ -270,8 +272,8 @@ public class OrdenProvisionManager {
      * Incrementa el flujo en las rutas de un camino de aumento.
      * 
      * @param caminoDeAumento Lista de RutaDTO representando el camino de aumento.
-     * @param flujoPorRuta Mapa que contiene el flujo por cada ruta.
-     * @param flujoDeAumento El valor del flujo de aumento a incrementar.
+     * @param flujoPorRuta    Mapa que contiene el flujo por cada ruta.
+     * @param flujoDeAumento  El valor del flujo de aumento a incrementar.
      */
     private void aumentarFlujoEnCamino(List<RutaDTO> caminoDeAumento, Map<RutaDTO, Double> flujoPorRuta,
             double flujoDeAumento) {
@@ -283,9 +285,11 @@ public class OrdenProvisionManager {
     /**
      * Calcula el PageRank de las sucursales en un grafo de rutas.
      * 
-     * @param factorAmortiguacion El factor de amortiguación para el cálculo del PageRank.
-     * @param iteraciones El número máximo de iteraciones para el cálculo del PageRank.
-     * @param tolerancia La tolerancia para el cálculo del PageRank.
+     * @param factorAmortiguacion El factor de amortiguación para el cálculo del
+     *                            PageRank.
+     * @param iteraciones         El número máximo de iteraciones para el cálculo
+     *                            del PageRank.
+     * @param tolerancia          La tolerancia para el cálculo del PageRank.
      * @return Un mapa que contiene el PageRank de cada sucursal.
      */
     public Map<SucursalDTO, Double> calcularPageRank(double factorAmortiguacion, int iteraciones, double tolerancia) {
@@ -334,8 +338,9 @@ public class OrdenProvisionManager {
     /**
      * Obtiene el número de enlaces salientes de una sucursal en un grafo de rutas.
      * 
-     * @param rutas Lista de rutas en el grafo.
-     * @param sucursal La SucursalDTO para la cual se desea obtener el número de enlaces salientes.
+     * @param rutas    Lista de rutas en el grafo.
+     * @param sucursal La SucursalDTO para la cual se desea obtener el número de
+     *                 enlaces salientes.
      * @return El número de enlaces salientes de la sucursal.
      */
     private int getNumEnlacesSalientes(List<RutaDTO> rutas, SucursalDTO sucursal) {
@@ -353,6 +358,7 @@ public class OrdenProvisionManager {
     public List<SucursalDTO> getSucursalesDeCamino(List<RutaDTO> rutas) {
         return rutas.stream()
                 .flatMap(ruta -> Stream.of(ruta.getSucursalOrigen(), ruta.getSucursalDestino()))
+                .distinct()
                 .collect(Collectors.toList());
     }
 

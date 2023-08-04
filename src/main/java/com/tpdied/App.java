@@ -24,6 +24,143 @@ import jakarta.persistence.EntityManager;
 
 public class App {
     public static void main(String[] args) {
+        inicializarDB();
+    }
+
+    private static void inicializarDB() {
+        EntityManagerUtil.limpiarDB();
+
+        EntityManager entityManager = EntityManagerUtil.getEntityManager();
+
+        SucursalController sc = new SucursalController(entityManager);
+        RutaController rc = new RutaController(entityManager);
+        ProductoController pc = new ProductoController(entityManager);
+        OrdenProvisionController oc = new OrdenProvisionController(entityManager);
+        SucursalDTO sPuerto = null;
+        SucursalDTO sB = null;
+        SucursalDTO sC = null;
+        SucursalDTO sD = null;
+        SucursalDTO sE = null;
+        SucursalDTO sF = null;
+        SucursalDTO sG = null;
+        SucursalDTO sX = null;
+        SucursalDTO sY = null;
+        SucursalDTO sZ = null;
+        SucursalDTO sCasaCentral = null;
+
+        List<SucursalDTO> sucursales = new ArrayList<SucursalDTO>();
+        try {
+            sPuerto = SucursalForm.validarSucursal("Puerto", "08:00", "20:00", true);
+            sB = SucursalForm.validarSucursal("B", "09:00", "20:00", true);
+            sC = SucursalForm.validarSucursal("C", "10:00", "19:00", true);
+            sD = SucursalForm.validarSucursal("D", "09:00", "18:00", true);
+            sE = SucursalForm.validarSucursal("E", "10:00", "19:00", true);
+            sF = SucursalForm.validarSucursal("F", "10:00", "19:00", true);
+            sG = SucursalForm.validarSucursal("G", "10:00", "19:00", true);
+            sX = SucursalForm.validarSucursal("X", "10:00", "19:00", true);
+            sY = SucursalForm.validarSucursal("Y", "10:00", "19:00", true);
+            sZ = SucursalForm.validarSucursal("Z", "10:00", "19:00", true);
+            sCasaCentral = SucursalForm.validarSucursal("Casa Central", "08:00", "18:00", true);
+            sucursales = List.of(sPuerto, sB, sC, sD, sE, sF, sG, sX, sY, sZ, sCasaCentral);
+            sucursales.forEach(s -> sc.addSucursal(s));
+        } catch (Exception e) {
+            System.out.println("Error al cargar sucursales: " + e.getMessage());
+        }
+
+        ProductoDTO p1 = null;
+        ProductoDTO p2 = null;
+        ProductoDTO p3 = null;
+        ProductoDTO p4 = null;
+        List<ProductoDTO> productos = new ArrayList<ProductoDTO>();
+        try {
+            p1 = ProductoForm.validarProducto("Producto 1", "Descripcion 1", "100.0", "5.0");
+            p2 = ProductoForm.validarProducto("Producto 2", "Descripcion 2", "50.0", "10.0");
+            p3 = ProductoForm.validarProducto("Producto 3", "Descripcion 3", "200.0", "2.5");
+            p4 = ProductoForm.validarProducto("Producto 4", "Descripcion 4", "100.5", "7.5");
+            productos = List.of(p1, p2, p3, p4);
+            productos.forEach(p -> pc.addProducto(p));
+        } catch (Exception e) {
+            System.out.println("Error al cargar Productos: " + e.getMessage());
+        }
+
+        try {
+            sc.setStockProducto(sc.getSucursalById(1), pc.getProductoById(1), 5);
+            sc.setStockProducto(sc.getSucursalById(1), pc.getProductoById(2), 10);
+            sc.setStockProducto(sc.getSucursalByName("B"), pc.getProductoByName("Producto 1"), 20);
+            sc.setStockProducto(sc.getSucursalByName("B"), pc.getProductoByName("Producto 2"), 20);
+        } catch (Exception e) {
+            System.out.println("Error al cargar Stocks en sucursales: " + e.getMessage());
+        }
+
+        RutaDTO r1 = null;
+        RutaDTO r2 = null;
+        RutaDTO r3 = null;
+        RutaDTO r4 = null;
+        RutaDTO r5 = null;
+        RutaDTO r6 = null;
+        RutaDTO r7 = null;
+        RutaDTO r8 = null;
+        RutaDTO r9 = null;
+        RutaDTO r10 = null;
+        RutaDTO r11 = null;
+        RutaDTO r12 = null;
+        RutaDTO r13 = null;
+        RutaDTO r14 = null;
+        RutaDTO r15 = null;
+        RutaDTO r16 = null;
+        RutaDTO r17 = null;
+        RutaDTO r18 = null;
+        RutaDTO r19 = null;
+
+        List<RutaDTO> rutas = new ArrayList<RutaDTO>();
+        try {
+            r1 = RutaForm.validarRuta("600", sc.getSucursalByName("B"), sc.getSucursalByName("C"), "02:30", true);
+            r2 = RutaForm.validarRuta("600", sc.getSucursalByName("D"), sc.getSucursalByName("F"), "02:00", true);
+            r3 = RutaForm.validarRuta("600", sc.getSucursalByName("X"), sc.getSucursalByName("G"), "02:45", true);
+            r4 = RutaForm.validarRuta("600", sc.getSucursalByName("F"), sc.getSucursalByName("Y"), "01:00", true);
+            r5 = RutaForm.validarRuta("500", sc.getSucursalByName("Puerto"), sc.getSucursalByName("C"), "02:00", true);
+            r6 = RutaForm.validarRuta("500", sc.getSucursalByName("C"), sc.getSucursalByName("F"), "02:00", true);
+            r7 = RutaForm.validarRuta("500", sc.getSucursalByName("F"), sc.getSucursalByName("G"), "01:30", true);
+            r8 = RutaForm.validarRuta("400", sc.getSucursalByName("G"), sc.getSucursalByName("E"), "02:30", true);
+            r9 = RutaForm.validarRuta("300", sc.getSucursalByName("Puerto"), sc.getSucursalByName("B"), "03:00", true);
+            r10 = RutaForm.validarRuta("300", sc.getSucursalByName("B"), sc.getSucursalByName("D"), "01:00", true);
+            r11 = RutaForm.validarRuta("300", sc.getSucursalByName("G"), sc.getSucursalByName("Casa Central"), "04:00",
+                    true);
+            r12 = RutaForm.validarRuta("200", sc.getSucursalByName("Puerto"), sc.getSucursalByName("X"), "02:30", true);
+            r13 = RutaForm.validarRuta("200", sc.getSucursalByName("X"), sc.getSucursalByName("Y"), "03:30", true);
+            r14 = RutaForm.validarRuta("200", sc.getSucursalByName("Y"), sc.getSucursalByName("Z"), "01:00", true);
+            r15 = RutaForm.validarRuta("100", sc.getSucursalByName("Z"), sc.getSucursalByName("Casa Central"), "01:30",
+                    true);
+            r16 = RutaForm.validarRuta("100", sc.getSucursalByName("X"), sc.getSucursalByName("C"), "02:15", true);
+            r17 = RutaForm.validarRuta("100", sc.getSucursalByName("C"), sc.getSucursalByName("D"), "03:15", true);
+            r18 = RutaForm.validarRuta("100", sc.getSucursalByName("D"), sc.getSucursalByName("E"), "02:45", true);
+            r19 = RutaForm.validarRuta("100", sc.getSucursalByName("E"), sc.getSucursalByName("Casa Central"), "01:00",
+                    true);
+
+            rutas = List.of(r1, r2, r3, r4, r5, r6, r7, r8, r9, r10, r11, r12, r13, r14, r15, r16, r17, r18, r19);
+            rutas.forEach(r -> rc.addRuta(r));
+        } catch (Exception e) {
+            System.out.println("Error al cargar rutas: " + e.getMessage());
+        }
+
+        OrdenProvisionDTO o1 = null;
+        OrdenProvisionDTO o2 = null;
+
+        Map<ProductoDTO, Integer> listaProductos = new HashMap<ProductoDTO, Integer>();
+
+        try {
+            listaProductos.put(pc.getProductoById(1), 4);
+            listaProductos.put(pc.getProductoById(2), 8);
+            o1 = OrdenProvisionForm.validarOrdenProvision(sc.getSucursalByName("C"), "48:30", listaProductos);
+            o2 = OrdenProvisionForm.validarOrdenProvision(sc.getSucursalByName("X"), "32:00", listaProductos);
+            oc.addOrdenProvision(o1);
+            oc.addOrdenProvision(o2);
+        } catch (Exception e) {
+            System.out.println("Error al cargar ordenes: " + e.getMessage());
+        }
+    }
+
+    private static void pruebasIniciales(){
         EntityManagerUtil.limpiarDB();
 
         EntityManager entityManager = EntityManagerUtil.getEntityManager();
