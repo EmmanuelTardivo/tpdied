@@ -6,16 +6,14 @@ import com.tpdied.forms.ProductoForm;
 import com.tpdied.util.EntityManagerUtil;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductoGui implements Tab{
+public class ProductoGui implements Tab {
 
-    public ProductoGui(){
+    public ProductoGui() {
         initComponents();
     }
 
@@ -24,25 +22,25 @@ public class ProductoGui implements Tab{
         return "Producto";
     }
 
-    public JPanel getTab(){
+    public JPanel getTab() {
         return jProductoTab;
     }
 
     private void initComponents() {
         jProductoTab = new javax.swing.JPanel();
-        lblIDProducto = new javax.swing.JLabel();
+        JLabel lblIDProducto = new JLabel();
         tfNombreProducto = new javax.swing.JTextField();
-        lblNombreProducto = new javax.swing.JLabel();
-        lblDescripcionProducto = new javax.swing.JLabel();
-        lblPrecioUnitario = new javax.swing.JLabel();
-        lblPesoKG = new javax.swing.JLabel();
-        btCrearProducto = new javax.swing.JButton();
-        btBuscarProducto = new javax.swing.JButton();
-        btModificarProducto = new javax.swing.JButton();
-        btEliminarProducto = new javax.swing.JButton();
-        spProducto = new javax.swing.JScrollPane();
+        JLabel lblNombreProducto = new JLabel();
+        JLabel lblDescripcionProducto = new JLabel();
+        JLabel lblPrecioUnitario = new JLabel();
+        JLabel lblPesoKG = new JLabel();
+        JButton btCrearProducto = new JButton();
+        JButton btBuscarProducto = new JButton();
+        JButton btModificarProducto = new JButton();
+        JButton btEliminarProducto = new JButton();
+        JScrollPane spProducto = new JScrollPane();
         tlProducto = new javax.swing.JTable();
-        btLimpiarProducto = new javax.swing.JButton();
+        JButton btLimpiarProducto = new JButton();
         tfDescripcionProducto = new javax.swing.JTextField();
         ftfPrecioUnitario = new javax.swing.JFormattedTextField();
         ftfPesoKG = new javax.swing.JFormattedTextField();
@@ -73,33 +71,96 @@ public class ProductoGui implements Tab{
 
         btCrearProducto.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btCrearProducto.setText("Crear");
-        btCrearProducto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btCrearProductoActionPerformed(evt);
+        btCrearProducto.addActionListener(evt -> {
+            try {
+                ProductoDTO dto = ProductoForm.validarProducto(tfNombreProducto.getText(), tfDescripcionProducto.getText(),
+                        ftfPrecioUnitario.getText(), ftfPesoKG.getText());
+                productoController.addProducto(dto);
+                javax.swing.JOptionPane.showMessageDialog(null, "Producto creado con éxito", "ÉXITO",
+                        JOptionPane.INFORMATION_MESSAGE);
+                updateProductoTable();
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
         btBuscarProducto.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btBuscarProducto.setText("Buscar");
-        btBuscarProducto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btBuscarProductoActionPerformed(evt);
+        btBuscarProducto.addActionListener(evt -> {
+            if (!ftfIDProducto.getText().isBlank()) {
+                List<ProductoDTO> aux = new ArrayList<>();
+                aux.add(productoController.getProductoById(Integer.parseInt(ftfIDProducto.getText())));
+                getTableProducto(aux);
+                return;
             }
+            if (!tfNombreProducto.getText().isBlank()) {
+                getTableProducto(productoController.getProductosByName(tfNombreProducto.getText()));
+                return;
+            }
+
+            if (!tfDescripcionProducto.getText().isBlank()) {
+                getTableProducto(productoController.getProductosByDescripcion(tfDescripcionProducto.getText()));
+                return;
+            }
+
+            if (!ftfPrecioUnitario.getText().isBlank() && !ftfPrecioUnitario.getText().equals("0")) {
+                getTableProducto(productoController.getProductosByPrecio(Double.parseDouble(ftfPrecioUnitario.getText())));
+                return;
+            }
+
+            if (!ftfPesoKG.getText().isBlank() && !ftfPesoKG.getText().equals("0")) {
+                getTableProducto(productoController.getProductosByPrecio(Double.parseDouble(ftfPesoKG.getText())));
+                return;
+            }
+            getTableProducto(productos);
         });
 
         btModificarProducto.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btModificarProducto.setText("Modificar");
-        btModificarProducto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btModificarProductoActionPerformed(evt);
+        btModificarProducto.addActionListener(evt -> {
+            if (tlProducto.getSelectionModel().isSelectionEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar un producto de la tabla para continuar.", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                ProductoDTO dto = ProductoForm.validarProducto(tfNombreProducto.getText(), tfDescripcionProducto.getText(),
+                        ftfPrecioUnitario.getText(), ftfPesoKG.getText());
+                dto.setId(Integer.parseInt(ftfIDProducto.getText()));
+                productoController.updateProducto(dto);
+                javax.swing.JOptionPane.showMessageDialog(null, "Producto modificado con éxito", "ÉXITO",
+                        JOptionPane.INFORMATION_MESSAGE);
+                updateProductoTable();
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
         btEliminarProducto.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btEliminarProducto.setText("Eliminar");
-        btEliminarProducto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btEliminarProductoActionPerformed(evt);
+        btEliminarProducto.addActionListener(evt -> {
+            if (tlProducto.getSelectionModel().isSelectionEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar un producto de la tabla para continuar.", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                int id = Integer.parseInt(tlProducto.getValueAt(tlProducto.getSelectedRow(), 0).toString());
+                ProductoDTO dto = productos
+                        .stream()
+                        .filter(p -> p.getId().equals(id))
+                        .findFirst().get();
+                productoController.deleteProducto(dto);
+                javax.swing.JOptionPane.showMessageDialog(null, "Producto eliminado con éxito", "ÉXITO",
+                        JOptionPane.INFORMATION_MESSAGE);
+                updateProductoTable();
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -110,10 +171,13 @@ public class ProductoGui implements Tab{
 
         btLimpiarProducto.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btLimpiarProducto.setText("Limpiar");
-        btLimpiarProducto.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btLimpiarProductoActionPerformed(evt);
-            }
+        btLimpiarProducto.addActionListener(evt -> {
+            ftfIDProducto.setText("");
+            tfNombreProducto.setText("");
+            tfDescripcionProducto.setText("");
+            ftfPrecioUnitario.setText("0");
+            ftfPesoKG.setText("0");
+            updateProductoTable();
         });
 
         tfDescripcionProducto.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
@@ -213,103 +277,6 @@ public class ProductoGui implements Tab{
         );
     }
 
-    private void btCrearProductoActionPerformed(java.awt.event.ActionEvent evt) {
-        try {
-            ProductoDTO dto = ProductoForm.validarProducto(tfNombreProducto.getText(), tfDescripcionProducto.getText(),
-                    ftfPrecioUnitario.getText(), ftfPesoKG.getText());
-            productoController.addProducto(dto);
-            javax.swing.JOptionPane.showMessageDialog(null, "Producto creado con éxito", "ÉXITO",
-                    JOptionPane.INFORMATION_MESSAGE);
-            updateProductoTable();
-        } catch (IllegalArgumentException e) {
-            javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void btBuscarProductoActionPerformed(java.awt.event.ActionEvent evt) {
-        if(!ftfIDProducto.getText().isBlank()){
-            List<ProductoDTO> aux = new ArrayList<ProductoDTO>();
-            aux.add(productoController.getProductoById(Integer.parseInt(ftfIDProducto.getText())));
-            getTableProducto(aux);
-            return;
-        }
-        if (!tfNombreProducto.getText().isBlank()){
-            getTableProducto(productoController.getProductosByName(tfNombreProducto.getText()));
-            return;
-        }
-
-        if (!tfDescripcionProducto.getText().isBlank()){
-            getTableProducto(productoController.getProductosByDescripcion(tfDescripcionProducto.getText()));
-            return;
-        }
-
-        if(!ftfPrecioUnitario.getText().isBlank() && !ftfPrecioUnitario.getText().equals("0")){
-            getTableProducto(productoController.getProductosByPrecio(Double.parseDouble(ftfPrecioUnitario.getText())));
-            return;
-        }
-
-        if(!ftfPesoKG.getText().isBlank() && !ftfPesoKG.getText().equals("0")){
-            getTableProducto(productoController.getProductosByPrecio(Double.parseDouble(ftfPesoKG.getText())));
-            return;
-        }
-
-        getTableProducto(productos);
-    }
-
-    private void btModificarProductoActionPerformed(java.awt.event.ActionEvent evt) {
-        if (tlProducto.getSelectionModel().isSelectionEmpty()){
-            javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar un producto de la tabla para continuar.", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            ProductoDTO dto = ProductoForm.validarProducto(tfNombreProducto.getText(), tfDescripcionProducto.getText(),
-                    ftfPrecioUnitario.getText(), ftfPesoKG.getText());
-            dto.setId(Integer.parseInt(ftfIDProducto.getText()));
-            productoController.updateProducto(dto);
-            javax.swing.JOptionPane.showMessageDialog(null, "Producto modificado con éxito", "ÉXITO",
-                    JOptionPane.INFORMATION_MESSAGE);
-            updateProductoTable();
-        } catch (IllegalArgumentException e) {
-            javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void btEliminarProductoActionPerformed(java.awt.event.ActionEvent evt) {
-        if (tlProducto.getSelectionModel().isSelectionEmpty()){
-            javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar un producto de la tabla para continuar.", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            int id = Integer.parseInt(tlProducto.getValueAt(tlProducto.getSelectedRow(), 0).toString());
-            ProductoDTO dto = productos
-                    .stream()
-                    .filter(p -> p.getId().equals(id))
-                    .findFirst().get();
-            productoController.deleteProducto(dto);
-            javax.swing.JOptionPane.showMessageDialog(null, "Producto eliminado con éxito", "ÉXITO",
-                    JOptionPane.INFORMATION_MESSAGE);
-            updateProductoTable();
-        } catch (IllegalArgumentException e) {
-            javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void btLimpiarProductoActionPerformed(java.awt.event.ActionEvent evt) {
-        ftfIDProducto.setText("");
-        tfNombreProducto.setText("");
-        tfDescripcionProducto.setText("");
-        ftfPrecioUnitario.setText("0");
-        ftfPesoKG.setText("0");
-        updateProductoTable();
-    }
-
     private void getTableProducto(List<ProductoDTO> listaDTO) {
         DefaultTableModel modelo = new DefaultTableModel() {
             @Override
@@ -325,8 +292,8 @@ public class ProductoGui implements Tab{
 
         String[] columnas = {"ID", "Nombre", "Descripcion", "Precio_Unitario", "Peso_KG"};
         String[] data = new String[columnas.length];
-        for (int i = 0; i < columnas.length; i++) {
-            modelo.addColumn(columnas[i]);
+        for (String columna : columnas) {
+            modelo.addColumn(columna);
         }
 
         if (!(listaDTO == null)) {
@@ -361,18 +328,17 @@ public class ProductoGui implements Tab{
             i--;
         }
 
-        tlProducto.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-            public void valueChanged(ListSelectionEvent event) {
-                if (tlProducto.getSelectionModel().isSelectionEmpty())
-                    return;
+        tlProducto.getSelectionModel().addListSelectionListener(event -> {
+            if (tlProducto.getSelectionModel().isSelectionEmpty())
+                return;
 
-                int row = tlProducto.getSelectedRow();
-                ftfIDProducto.setText(tlProducto.getValueAt(row, 0).toString());
-                tfNombreProducto.setText(tlProducto.getValueAt(row, 1).toString());
-                tfDescripcionProducto.setText(tlProducto.getValueAt(row, 2).toString());
-                ftfPrecioUnitario.setText(tlProducto.getValueAt(row, 3).toString());
-                ftfPesoKG.setText(tlProducto.getValueAt(row, 4).toString());
-            }});
+            int row = tlProducto.getSelectedRow();
+            ftfIDProducto.setText(tlProducto.getValueAt(row, 0).toString());
+            tfNombreProducto.setText(tlProducto.getValueAt(row, 1).toString());
+            tfDescripcionProducto.setText(tlProducto.getValueAt(row, 2).toString());
+            ftfPrecioUnitario.setText(tlProducto.getValueAt(row, 3).toString());
+            ftfPesoKG.setText(tlProducto.getValueAt(row, 4).toString());
+        });
     }
 
     private void updateProductoTable() {
@@ -381,21 +347,10 @@ public class ProductoGui implements Tab{
         getTableProducto(productos);
     }
 
-    private javax.swing.JButton btBuscarProducto;
-    private javax.swing.JButton btCrearProducto;
-    private javax.swing.JButton btEliminarProducto;
-    private javax.swing.JButton btLimpiarProducto;
-    private javax.swing.JButton btModificarProducto;
     private javax.swing.JFormattedTextField ftfIDProducto;
     private javax.swing.JFormattedTextField ftfPesoKG;
     private javax.swing.JFormattedTextField ftfPrecioUnitario;
     private javax.swing.JPanel jProductoTab;
-    private javax.swing.JLabel lblDescripcionProducto;
-    private javax.swing.JLabel lblIDProducto;
-    private javax.swing.JLabel lblNombreProducto;
-    private javax.swing.JLabel lblPesoKG;
-    private javax.swing.JLabel lblPrecioUnitario;
-    private javax.swing.JScrollPane spProducto;
     private javax.swing.JTextField tfDescripcionProducto;
     private javax.swing.JTextField tfNombreProducto;
     private javax.swing.JTable tlProducto;

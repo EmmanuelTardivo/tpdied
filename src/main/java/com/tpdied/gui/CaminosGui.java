@@ -12,9 +12,9 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.List;
 
-public class CaminosGui implements Tab{
+public class CaminosGui implements Tab {
 
-    public CaminosGui(){
+    public CaminosGui() {
         initComponents();
     }
 
@@ -23,20 +23,20 @@ public class CaminosGui implements Tab{
         return "Caminos";
     }
 
-    public JPanel getTab(){
+    public JPanel getTab() {
         return jCaminos;
     }
 
     private void initComponents() {
         jCaminos = new javax.swing.JPanel();
-        spCaminos = new javax.swing.JScrollPane(tlCaminos);
+        JScrollPane spCaminos = new JScrollPane(tlCaminos);
         tlCaminos = new javax.swing.JTable();
-        btVerCaminos = new javax.swing.JButton();
-        spCaminosCanvas = new javax.swing.JScrollPane(tlCaminos);
+        JButton btVerCaminos = new JButton();
+        JScrollPane spCaminosCanvas = new JScrollPane(tlCaminos);
         tlCaminosCanvas = new javax.swing.JTable();
-        btAsignarRecorrido = new javax.swing.JButton();
-        btLimpiarCaminos = new javax.swing.JButton();
-        btVerRuta = new javax.swing.JButton();
+        JButton btAsignarRecorrido = new JButton();
+        JButton btLimpiarCaminos = new JButton();
+        JButton btVerRuta = new JButton();
 
         jCaminos.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 12)); // NOI18N
         jCaminos.setMaximumSize(new java.awt.Dimension(704, 430));
@@ -49,7 +49,7 @@ public class CaminosGui implements Tab{
         btVerCaminos.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btVerCaminos.setText("Ver Caminos");
         btVerCaminos.addActionListener(e -> {
-            if(tlCaminos.getSelectedRow() == -1){
+            if (tlCaminos.getSelectedRow() == -1) {
                 javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una orden de la tabla para continuar.", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
                 return;
@@ -70,12 +70,12 @@ public class CaminosGui implements Tab{
         btAsignarRecorrido.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btAsignarRecorrido.setText("Asignar Recorrido");
         btAsignarRecorrido.addActionListener(e -> {
-            if(tlCaminos.getSelectedRow() == -1){
+            if (tlCaminos.getSelectedRow() == -1) {
                 javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una orden de la tabla para continuar.", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if(tlCaminosCanvas.getSelectedRow() == -1){
+            if (tlCaminosCanvas.getSelectedRow() == -1) {
                 javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar un camino de la tabla para continuar.", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
                 return;
@@ -90,8 +90,9 @@ public class CaminosGui implements Tab{
             ordenProvisionController.updateOrdenProvision(dto);
             javax.swing.JOptionPane.showMessageDialog(null, "Orden asignada con éxito", "ÉXITO",
                     JOptionPane.INFORMATION_MESSAGE);
-            ordenes = ordenProvisionController.getAllOrdenesProvision();
+            ordenes = ordenProvisionController.getOrdenesProvisionPendientes();
             getTableOrdenProvision(ordenes);
+            getTableCaminosCanvas(null);
         });
 
         btLimpiarCaminos.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
@@ -99,22 +100,24 @@ public class CaminosGui implements Tab{
         btLimpiarCaminos.addActionListener(e -> {
             tlCaminos.getSelectionModel().clearSelection();
             tlCaminosCanvas.getSelectionModel().clearSelection();
+            ordenes = ordenProvisionController.getOrdenesProvisionPendientes();
+            getTableOrdenProvision(ordenes);
             getTableCaminosCanvas(null);
         });
 
         btVerRuta.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btVerRuta.setText("Ver Ruta");
         btVerRuta.addActionListener(e -> {
-            if(tlCaminosCanvas.getSelectedRow() == -1){
+            if (tlCaminosCanvas.getSelectedRow() == -1) {
                 javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar un camino de la tabla para continuar.", "ERROR",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            Integer row = tlCaminosCanvas.getSelectedRow();
+            int row = tlCaminosCanvas.getSelectedRow();
             List<RutaDTO> camino = caminosPosibles
                     .stream()
                     .filter(c -> c.get(0).getSucursalOrigen().toString().equals(tlCaminosCanvas.getValueAt(row, 0))
-                    && ordenProvisionManager.getTiempoTotal(c).toString().equals(tlCaminosCanvas.getValueAt(row, 1)))
+                            && ordenProvisionManager.getTiempoTotal(c).equals(tlCaminosCanvas.getValueAt(row, 1)))
                     .findFirst()
                     .get();
             new RecorridoGui(camino);
@@ -171,20 +174,19 @@ public class CaminosGui implements Tab{
             }
         };
 
-        String[] columnas = {"ID", "Fecha", "S. Destino", "Tiempo Max.", "Productos"};
+        String[] columnas = {"ID", "Fecha", "S. Destino", "Tiempo Max."};
         String[] data = new String[columnas.length];
-        for (int i = 0; i < columnas.length; i++) {
-            modelo.addColumn(columnas[i]);
+        for (String columna : columnas) {
+            modelo.addColumn(columna);
         }
 
         if (!(listaDTO == null)) {
             try {
                 for (OrdenProvisionDTO dto : listaDTO) {
                     data[0] = dto.getId().toString();
-                    data[1] = dto.getFechaOrden().toString();
+                    data[1] = dto.getFechaOrden().toLocalDate().toString();
                     data[2] = dto.getSucursalDestino().getNombre();
                     data[3] = dto.getLimiteTiempo().toString();
-                    data[4] = "";
                     modelo.addRow(data);
                 }
 
@@ -225,8 +227,8 @@ public class CaminosGui implements Tab{
 
         String[] columnas = {"S. Origen", "Tiempo"};
         String[] data = new String[columnas.length];
-        for (int i = 0; i < columnas.length; i++) {
-            modelo.addColumn(columnas[i]);
+        for (String columna : columnas) {
+            modelo.addColumn(columna);
         }
 
         if (!(caminos == null)) {
@@ -260,15 +262,9 @@ public class CaminosGui implements Tab{
     }
 
 
-    private javax.swing.JButton btVerCaminos;
     private javax.swing.JPanel jCaminos;
-    private javax.swing.JScrollPane spCaminos;
     private javax.swing.JTable tlCaminos;
-    private javax.swing.JScrollPane spCaminosCanvas;
     private javax.swing.JTable tlCaminosCanvas;
-    private javax.swing.JButton btAsignarRecorrido;
-    private javax.swing.JButton btLimpiarCaminos;
-    private javax.swing.JButton btVerRuta;
 
     private final OrdenProvisionController ordenProvisionController = new OrdenProvisionController(EntityManagerUtil.getEntityManager());
     private final OrdenProvisionManager ordenProvisionManager = new OrdenProvisionManager(EntityManagerUtil.getEntityManager());

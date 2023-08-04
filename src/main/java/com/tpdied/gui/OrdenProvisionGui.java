@@ -17,9 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class OrdenProvisionGui implements Tab{
+public class OrdenProvisionGui implements Tab {
 
-    public OrdenProvisionGui(){
+    public OrdenProvisionGui() {
         initComponents();
     }
 
@@ -28,28 +28,28 @@ public class OrdenProvisionGui implements Tab{
         return "Provision";
     }
 
-    public JPanel getTab(){
+    public JPanel getTab() {
         return jProvisionTab;
     }
 
     private void initComponents() {
         jProvisionTab = new javax.swing.JPanel();
-        lblSucursalProvision = new javax.swing.JLabel();
-        lblProductoProvision = new javax.swing.JLabel();
-        lblCantidadProvision = new javax.swing.JLabel();
-        btAgregarProductoProvision = new javax.swing.JButton();
-        btEliminarProductoProvision = new javax.swing.JButton();
-        spProvision = new javax.swing.JScrollPane(tlProvision);
+        JLabel lblSucursalProvision = new JLabel();
+        JLabel lblProductoProvision = new JLabel();
+        JLabel lblCantidadProvision = new JLabel();
+        JButton btAgregarProductoProvision = new JButton();
+        JButton btEliminarProductoProvision = new JButton();
+        JScrollPane spProvision = new JScrollPane(tlProvision);
         tlProvision = new javax.swing.JTable();
-        btCrearProvision = new javax.swing.JButton();
-        cbSucursalProvision = new JComboBox<SucursalDTO>();
-        cbProductoProvision = new JComboBox<ProductoDTO>();
-        lblFechaProvision = new javax.swing.JLabel();
-        lblTiempoMax = new javax.swing.JLabel();
-        btLimpiarProvision = new javax.swing.JButton();
+        JButton btCrearProvision = new JButton();
+        cbSucursalProvision = new JComboBox<>();
+        cbProductoProvision = new JComboBox<>();
+        JLabel lblFechaProvision = new JLabel();
+        JLabel lblTiempoMax = new JLabel();
+        JButton btLimpiarProvision = new JButton();
         ftfCantidadProvision = new javax.swing.JFormattedTextField();
         ftfTiempoMax = new javax.swing.JFormattedTextField();
-        lblFechaOrdenProvision = new javax.swing.JLabel();
+        JLabel lblFechaOrdenProvision = new JLabel();
 
         jProvisionTab.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 12)); // NOI18N
         jProvisionTab.setMaximumSize(new java.awt.Dimension(704, 430));
@@ -67,18 +67,26 @@ public class OrdenProvisionGui implements Tab{
 
         btAgregarProductoProvision.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btAgregarProductoProvision.setText("Agregar Producto");
-        btAgregarProductoProvision.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btAgregarProductoProvisionActionPerformed(evt);
+        btAgregarProductoProvision.addActionListener(evt -> {
+            if (cbSucursalProvision.getSelectedIndex() == -1 || cbProductoProvision.getSelectedIndex() == -1) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una sucursal y un producto para continuar.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+            if (Integer.parseInt(ftfCantidadProvision.getText()) <= 0) {
+                javax.swing.JOptionPane.showMessageDialog(null, "La cantidad debe ser positiva y mayor a 0.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            updateProvisionTable((ProductoDTO) cbProductoProvision.getSelectedItem(), Integer.parseInt(ftfCantidadProvision.getText()), false);
         });
 
         btEliminarProductoProvision.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btEliminarProductoProvision.setText("Eliminar Producto");
-        btEliminarProductoProvision.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btEliminarProductoProvisionActionPerformed(evt);
+        btEliminarProductoProvision.addActionListener(evt -> {
+            if (tlProvision.getSelectionModel().isSelectionEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar producto de la tabla para continuar.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
             }
+            updateProvisionTable((ProductoDTO) cbProductoProvision.getSelectedItem(), Integer.parseInt(ftfCantidadProvision.getText()), true);
         });
 
         spProvision.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
@@ -89,24 +97,34 @@ public class OrdenProvisionGui implements Tab{
 
         btCrearProvision.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btCrearProvision.setText("Crear Orden");
-        btCrearProvision.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btCrearProvisionActionPerformed(evt);
+        btCrearProvision.addActionListener(evt -> {
+            if (cbSucursalProvision.getSelectedIndex() == -1 || cbProductoProvision.getSelectedIndex() == -1) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una sucursal y un producto para continuar.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (tlProvision.getModel().getRowCount() == 0) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe agregar productos a la tabla para continuar.", "ERROR", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                SucursalDTO sucursalDTO = (SucursalDTO) cbSucursalProvision.getSelectedItem();
+                provisionController.addOrdenProvision(OrdenProvisionForm.validarOrdenProvision(sucursalDTO, ftfTiempoMax.getText(), ordenProvision));
+                javax.swing.JOptionPane.showMessageDialog(null, "Orden de provision creada con éxito", "ÉXITO", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         cbSucursalProvision.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         cbSucursalProvision.setToolTipText("");
-        sucursales.forEach(s -> {
-            cbSucursalProvision.addItem(s);
-        });
+        sucursales.forEach(s -> cbSucursalProvision.addItem(s));
         cbSucursalProvision.setSelectedIndex(-1);
 
         cbProductoProvision.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         cbProductoProvision.setToolTipText("");
-        productos.forEach(s -> {
-            cbProductoProvision.addItem(s);
-        });
+        productos.forEach(s -> cbProductoProvision.addItem(s));
         cbProductoProvision.setSelectedIndex(-1);
 
         lblFechaProvision.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
@@ -114,10 +132,19 @@ public class OrdenProvisionGui implements Tab{
 
         btLimpiarProvision.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btLimpiarProvision.setText("Limpiar");
-        btLimpiarProvision.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btLimpiarProvisionActionPerformed(evt);
-            }
+        btLimpiarProvision.addActionListener(evt -> {
+            sucursales = sucursalController.getAllSucursales();
+            cbSucursalProvision.removeAllItems();
+            sucursales.forEach(s -> cbSucursalProvision.addItem(s));
+            cbSucursalProvision.setSelectedIndex(-1);
+            productos = productoController.getAllProductos();
+            cbProductoProvision.removeAllItems();
+            productos.forEach(s -> cbProductoProvision.addItem(s));
+            cbProductoProvision.setSelectedIndex(-1);
+            ftfCantidadProvision.setText("0");
+            ftfTiempoMax.setText("00:00");
+            ordenProvision = new HashMap<>();
+            getTableProvision();
         });
 
         ftfCantidadProvision.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
@@ -137,144 +164,9 @@ public class OrdenProvisionGui implements Tab{
 
         javax.swing.GroupLayout jProvisionTabLayout = new javax.swing.GroupLayout(jProvisionTab);
         jProvisionTab.setLayout(jProvisionTabLayout);
-        jProvisionTabLayout.setHorizontalGroup(
-                jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jProvisionTabLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jProvisionTabLayout.createSequentialGroup()
-                                                .addComponent(lblTiempoMax)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(ftfTiempoMax, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(jProvisionTabLayout.createSequentialGroup()
-                                                .addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(lblSucursalProvision)
-                                                        .addComponent(lblProductoProvision)
-                                                        .addComponent(lblFechaProvision)
-                                                        .addComponent(lblCantidadProvision))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                                .addComponent(cbSucursalProvision, 0, 107, Short.MAX_VALUE)
-                                                                .addComponent(cbProductoProvision, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                                .addComponent(lblFechaOrdenProvision, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                                        .addComponent(ftfCantidadProvision, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addGroup(jProvisionTabLayout.createSequentialGroup()
-                                                .addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                        .addComponent(btCrearProvision, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addComponent(btEliminarProductoProvision, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addComponent(btAgregarProductoProvision, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(btLimpiarProvision, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(0, 0, Short.MAX_VALUE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(spProvision, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addContainerGap(141, Short.MAX_VALUE))
-        );
-        jProvisionTabLayout.setVerticalGroup(
-                jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jProvisionTabLayout.createSequentialGroup()
-                                .addGap(19, 19, 19)
-                                .addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(lblFechaProvision)
-                                        .addComponent(lblFechaOrdenProvision))
-                                .addGap(15, 15, 15)
-                                .addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(lblSucursalProvision)
-                                        .addComponent(cbSucursalProvision, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(lblProductoProvision)
-                                        .addComponent(cbProductoProvision, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(lblTiempoMax)
-                                        .addComponent(ftfTiempoMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(9, 9, 9)
-                                .addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(lblCantidadProvision)
-                                        .addComponent(ftfCantidadProvision, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(24, 24, 24)
-                                .addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(btAgregarProductoProvision)
-                                        .addComponent(btLimpiarProvision))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btEliminarProductoProvision)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(btCrearProvision)
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(jProvisionTabLayout.createSequentialGroup()
-                                .addComponent(spProvision, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 60, Short.MAX_VALUE))
-        );
+        jProvisionTabLayout.setHorizontalGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jProvisionTabLayout.createSequentialGroup().addContainerGap().addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jProvisionTabLayout.createSequentialGroup().addComponent(lblTiempoMax).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(ftfTiempoMax, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)).addGroup(jProvisionTabLayout.createSequentialGroup().addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addComponent(lblSucursalProvision).addComponent(lblProductoProvision).addComponent(lblFechaProvision).addComponent(lblCantidadProvision)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false).addComponent(cbSucursalProvision, 0, 107, Short.MAX_VALUE).addComponent(cbProductoProvision, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(lblFechaOrdenProvision, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addComponent(ftfCantidadProvision, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))).addGroup(jProvisionTabLayout.createSequentialGroup().addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false).addComponent(btCrearProvision, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(btEliminarProductoProvision, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(btAgregarProductoProvision, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(btLimpiarProvision, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(0, 0, Short.MAX_VALUE))).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE).addComponent(spProvision, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE).addContainerGap(141, Short.MAX_VALUE)));
+        jProvisionTabLayout.setVerticalGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(jProvisionTabLayout.createSequentialGroup().addGap(19, 19, 19).addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(lblFechaProvision).addComponent(lblFechaOrdenProvision)).addGap(15, 15, 15).addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(lblSucursalProvision).addComponent(cbSucursalProvision, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(lblProductoProvision).addComponent(cbProductoProvision, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(lblTiempoMax).addComponent(ftfTiempoMax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(9, 9, 9).addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(lblCantidadProvision).addComponent(ftfCantidadProvision, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)).addGap(24, 24, 24).addGroup(jProvisionTabLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE).addComponent(btAgregarProductoProvision).addComponent(btLimpiarProvision)).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(btEliminarProductoProvision).addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED).addComponent(btCrearProvision).addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addGroup(jProvisionTabLayout.createSequentialGroup().addComponent(spProvision, javax.swing.GroupLayout.PREFERRED_SIZE, 370, javax.swing.GroupLayout.PREFERRED_SIZE).addGap(0, 60, Short.MAX_VALUE)));
     }
-
-    private void btAgregarProductoProvisionActionPerformed(java.awt.event.ActionEvent evt) {
-        if (cbSucursalProvision.getSelectedIndex() == -1 || cbProductoProvision.getSelectedIndex() == -1) {
-            javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una sucursal y un producto para continuar.", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        if (Integer.parseInt(ftfCantidadProvision.getText()) <= 0){
-            javax.swing.JOptionPane.showMessageDialog(null, "La cantidad debe ser positiva y mayor a 0.", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        updateProvisionTable((ProductoDTO) cbProductoProvision.getSelectedItem(), Integer.parseInt(ftfCantidadProvision.getText()), false);
-    }
-
-    private void btLimpiarProvisionActionPerformed(java.awt.event.ActionEvent evt) {
-        sucursales = sucursalController.getAllSucursales();
-        cbSucursalProvision.removeAllItems();
-        sucursales.forEach(s -> {
-            cbSucursalProvision.addItem(s);
-        });
-        cbSucursalProvision.setSelectedIndex(-1);
-        productos = productoController.getAllProductos();
-        cbProductoProvision.removeAllItems();
-        productos.forEach(s -> {
-            cbProductoProvision.addItem(s);
-        });
-        cbProductoProvision.setSelectedIndex(-1);
-        ftfCantidadProvision.setText("0");
-        ftfTiempoMax.setText("00:00");
-        ordenProvision = new HashMap<ProductoDTO, Integer>();
-        getTableProvision();
-    }
-
-    private void btEliminarProductoProvisionActionPerformed(java.awt.event.ActionEvent evt) {
-        if (tlProvision.getSelectionModel().isSelectionEmpty()){
-            javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar producto de la tabla para continuar.", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        updateProvisionTable((ProductoDTO) cbProductoProvision.getSelectedItem(), Integer.parseInt(ftfCantidadProvision.getText()), true);
-    }
-
-    private void btCrearProvisionActionPerformed(java.awt.event.ActionEvent evt) {
-        if (cbSucursalProvision.getSelectedIndex() == -1 || cbProductoProvision.getSelectedIndex() == -1) {
-            javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una sucursal y un producto para continuar.", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        if (tlProvision.getModel().getRowCount() == 0 ){
-            javax.swing.JOptionPane.showMessageDialog(null, "Debe agregar productos a la tabla para continuar.", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            SucursalDTO sucursalDTO = (SucursalDTO) cbSucursalProvision.getSelectedItem();
-            provisionController.addOrdenProvision(OrdenProvisionForm.validarOrdenProvision(sucursalDTO, ftfTiempoMax.getText(), ordenProvision));
-            javax.swing.JOptionPane.showMessageDialog(null, "Orden de provision creada con éxito", "ÉXITO",
-                    JOptionPane.INFORMATION_MESSAGE);
-        } catch (IllegalArgumentException e) {
-            javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
 
     private void getTableProvision() {
         DefaultTableModel modelo = new DefaultTableModel() {
@@ -291,8 +183,8 @@ public class OrdenProvisionGui implements Tab{
 
         String[] columnas = {"ID Producto", "Producto", "Cantidad"};
         String[] data = new String[columnas.length];
-        for (int i = 0; i < columnas.length; i++) {
-            modelo.addColumn(columnas[i]);
+        for (String columna : columnas) {
+            modelo.addColumn(columna);
         }
 
         tlProvision.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -333,29 +225,17 @@ public class OrdenProvisionGui implements Tab{
         getTableProvision();
     }
 
-    private javax.swing.JButton btAgregarProductoProvision;
-    private javax.swing.JButton btCrearProvision;
-    private javax.swing.JButton btEliminarProductoProvision;
-    private javax.swing.JButton btLimpiarProvision;
     private JComboBox<ProductoDTO> cbProductoProvision;
     private JComboBox<SucursalDTO> cbSucursalProvision;
     private javax.swing.JFormattedTextField ftfCantidadProvision;
     private javax.swing.JFormattedTextField ftfTiempoMax;
     private javax.swing.JPanel jProvisionTab;
-    private javax.swing.JLabel lblCantidadProvision;
-    private javax.swing.JLabel lblFechaOrdenProvision;
-    private javax.swing.JLabel lblFechaProvision;
-    private javax.swing.JLabel lblTiempoMax;
-    private javax.swing.JLabel lblProductoProvision;
-    private javax.swing.JLabel lblSucursalProvision;
-    private javax.swing.JScrollPane spProvision;
     private javax.swing.JTable tlProvision;
 
     private final SucursalController sucursalController = new SucursalController(EntityManagerUtil.getEntityManager());
     private final ProductoController productoController = new ProductoController(EntityManagerUtil.getEntityManager());
-    private final OrdenProvisionController provisionController = new OrdenProvisionController(
-            EntityManagerUtil.getEntityManager());
+    private final OrdenProvisionController provisionController = new OrdenProvisionController(EntityManagerUtil.getEntityManager());
     private List<SucursalDTO> sucursales = sucursalController.getAllSucursales();
     private List<ProductoDTO> productos = productoController.getAllProductos();
-    private Map<ProductoDTO, Integer> ordenProvision = new HashMap<ProductoDTO, Integer>();
+    private Map<ProductoDTO, Integer> ordenProvision = new HashMap<>();
 }

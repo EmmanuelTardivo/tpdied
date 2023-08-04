@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import com.formdev.flatlaf.FlatIntelliJLaf;
 import com.tpdied.controllers.OrdenProvisionController;
 import com.tpdied.controllers.ProductoController;
 import com.tpdied.controllers.RutaController;
@@ -17,14 +20,30 @@ import com.tpdied.forms.OrdenProvisionForm;
 import com.tpdied.forms.ProductoForm;
 import com.tpdied.forms.RutaForm;
 import com.tpdied.forms.SucursalForm;
+import com.tpdied.gui.PrincipalGUI;
 import com.tpdied.managers.OrdenProvisionManager;
 import com.tpdied.util.EntityManagerUtil;
 
 import jakarta.persistence.EntityManager;
 
+import javax.swing.*;
+
 public class App {
     public static void main(String[] args) {
         inicializarDB();
+        inicializarGUI();
+    }
+
+    private static void inicializarGUI() {
+        try {
+            UIManager.setLookAndFeel(new FlatIntelliJLaf());
+            /* Create and display the form */
+            java.awt.EventQueue.invokeLater(() -> {
+                new PrincipalGUI().setVisible(true);
+            });
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(PrincipalGUI.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private static void inicializarDB() {

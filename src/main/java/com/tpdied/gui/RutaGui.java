@@ -8,17 +8,15 @@ import com.tpdied.forms.RutaForm;
 import com.tpdied.util.EntityManagerUtil;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RutaGui implements Tab{
+public class RutaGui implements Tab {
 
-    public RutaGui(){
+    public RutaGui() {
         initComponents();
     }
 
@@ -27,27 +25,27 @@ public class RutaGui implements Tab{
         return "Ruta";
     }
 
-    public JPanel getTab(){
+    public JPanel getTab() {
         return jRutaTab;
     }
 
     private void initComponents() {
         jRutaTab = new javax.swing.JPanel();
-        lblIDRuta = new javax.swing.JLabel();
-        lblSucursalOrigen = new javax.swing.JLabel();
-        lblSucursalDestino = new javax.swing.JLabel();
-        lblTiempoTransito = new javax.swing.JLabel();
-        lblCapacidadMaxima = new javax.swing.JLabel();
-        btCrearRuta = new javax.swing.JButton();
-        btBuscarRuta = new javax.swing.JButton();
-        btModificarRuta = new javax.swing.JButton();
-        btEliminarRuta = new javax.swing.JButton();
-        spRuta = new javax.swing.JScrollPane();
+        JLabel lblIDRuta = new JLabel();
+        JLabel lblSucursalOrigen = new JLabel();
+        JLabel lblSucursalDestino = new JLabel();
+        JLabel lblTiempoTransito = new JLabel();
+        JLabel lblCapacidadMaxima = new JLabel();
+        JButton btCrearRuta = new JButton();
+        JButton btBuscarRuta = new JButton();
+        JButton btModificarRuta = new JButton();
+        JButton btEliminarRuta = new JButton();
+        JScrollPane spRuta = new JScrollPane();
         tlRuta = new javax.swing.JTable();
-        btLimpiarRuta = new javax.swing.JButton();
-        cbSucursalOrigen = new JComboBox<SucursalDTO>();
-        cbSucursalDestino = new JComboBox<SucursalDTO>();
-        lblEstadoRuta = new javax.swing.JLabel();
+        JButton btLimpiarRuta = new JButton();
+        cbSucursalOrigen = new JComboBox<>();
+        cbSucursalDestino = new JComboBox<>();
+        JLabel lblEstadoRuta = new JLabel();
         cbEstadoRuta = new javax.swing.JCheckBox();
         ftfCapMaxima = new javax.swing.JFormattedTextField();
         ftfTiempoTransito = new javax.swing.JFormattedTextField();
@@ -75,33 +73,110 @@ public class RutaGui implements Tab{
 
         btCrearRuta.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btCrearRuta.setText("Crear");
-        btCrearRuta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btCrearRutaActionPerformed(evt);
+        btCrearRuta.addActionListener(evt -> {
+            if (cbSucursalOrigen.getSelectedIndex() == -1 || cbSucursalDestino.getSelectedIndex() == -1) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una sucursal de origen y destino.", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                SucursalDTO dtoOrigen = (SucursalDTO) cbSucursalOrigen.getSelectedItem();
+                SucursalDTO dtoDestino = (SucursalDTO) cbSucursalDestino.getSelectedItem();
+                RutaDTO dto = RutaForm.validarRuta(ftfCapMaxima.getText(), dtoOrigen, dtoDestino, ftfTiempoTransito.getText(), cbEstadoRuta.isSelected());
+                rutaController.addRuta(dto);
+                javax.swing.JOptionPane.showMessageDialog(null, "Ruta creada con éxito", "ÉXITO",
+                        JOptionPane.INFORMATION_MESSAGE);
+                updateRutaTable();
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
         btBuscarRuta.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btBuscarRuta.setText("Buscar");
-        btBuscarRuta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btBuscarRutaActionPerformed(evt);
+        btBuscarRuta.addActionListener(evt -> {
+            if (!ftfIDRuta.getText().isBlank()) {
+                List<RutaDTO> aux = new ArrayList<>();
+                aux.add(rutaController.getRutaById(Integer.parseInt(ftfIDRuta.getText())));
+                getTableRuta(aux);
+                return;
             }
+            if (cbSucursalOrigen.getSelectedIndex() != -1) {
+                getTableRuta(rutaController.getRutasBySucursalOrigen((SucursalDTO) cbSucursalOrigen.getSelectedItem()));
+                return;
+            }
+
+            if (!ftfTiempoTransito.getText().isBlank() && !ftfTiempoTransito.getText().equals("00:00")) {
+                String[] partes = ftfTiempoTransito.getText().split(":");
+                int horas = Integer.parseInt(partes[0]);
+                int minutos = Integer.parseInt(partes[1]);
+                Duration.ofHours(horas).plusMinutes(minutos);
+
+                getTableRuta(rutaController.getRutasByDuracionViaje(Duration.ofHours(horas).plusMinutes(minutos)));
+                return;
+            }
+
+            if (!ftfCapMaxima.getText().isBlank() && !ftfCapMaxima.getText().equals("0")) {
+                getTableRuta(rutaController.getRutasByCapacidadEnKilos(Double.parseDouble(ftfCapMaxima.getText())));
+                return;
+            }
+
+            if (cbEstadoRuta.isSelected()) {
+                getTableRuta(rutaController.getRutasByEstado(cbEstadoRuta.isSelected()));
+                return;
+            }
+
+            getTableRuta(rutas);
         });
 
         btModificarRuta.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btModificarRuta.setText("Modificar");
-        btModificarRuta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btModificarRutaActionPerformed(evt);
+        btModificarRuta.addActionListener(evt -> {
+            if (tlRuta.getSelectionModel().isSelectionEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una ruta de la tabla para continuar.", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                RutaDTO dto = RutaForm.validarRuta(ftfCapMaxima.getText(), (SucursalDTO) cbSucursalOrigen.getSelectedItem(),
+                        (SucursalDTO) cbSucursalDestino.getSelectedItem(), ftfTiempoTransito.getText(), cbEstadoRuta.isSelected());
+                dto.setId(Integer.parseInt(ftfIDRuta.getText()));
+                rutaController.updateRuta(dto);
+                javax.swing.JOptionPane.showMessageDialog(null, "Ruta modificada con éxito", "ÉXITO",
+                        JOptionPane.INFORMATION_MESSAGE);
+                updateRutaTable();
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
         btEliminarRuta.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btEliminarRuta.setText("Eliminar");
-        btEliminarRuta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btEliminarRutaActionPerformed(evt);
+        btEliminarRuta.addActionListener(evt -> {
+            if (tlRuta.getSelectionModel().isSelectionEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una ruta de la tabla para continuar.", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                int id = Integer.parseInt(tlRuta.getValueAt(tlRuta.getSelectedRow(), 0).toString());
+                RutaDTO dto = rutas
+                        .stream()
+                        .filter(r -> r.getId().equals(id))
+                        .findFirst()
+                        .orElseThrow();
+                rutaController.deleteRuta(dto);
+                javax.swing.JOptionPane.showMessageDialog(null, "Ruta eliminada con éxito", "ÉXITO",
+                        JOptionPane.INFORMATION_MESSAGE);
+                updateRutaTable();
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -119,10 +194,20 @@ public class RutaGui implements Tab{
 
         btLimpiarRuta.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btLimpiarRuta.setText("Limpiar");
-        btLimpiarRuta.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btLimpiarRutaActionPerformed(evt);
-            }
+        btLimpiarRuta.addActionListener(evt -> {
+            ftfIDRuta.setText("");
+            ftfTiempoTransito.setText("00:00");
+            ftfCapMaxima.setText("0");
+            cbEstadoRuta.setSelected(false);
+            cbSucursalOrigen.removeAllItems();
+            cbSucursalDestino.removeAllItems();
+            sucursales.forEach(s -> {
+                cbSucursalOrigen.addItem(s);
+                cbSucursalDestino.addItem(s);
+            });
+            cbSucursalOrigen.setSelectedIndex(-1);
+            cbSucursalDestino.setSelectedIndex(-1);
+            updateRutaTable();
         });
 
         cbSucursalOrigen.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
@@ -240,126 +325,6 @@ public class RutaGui implements Tab{
         );
     }
 
-    /**
-     * Ruta CRUD Eventos y Auxiliares
-     */
-    private void btCrearRutaActionPerformed(java.awt.event.ActionEvent evt) {
-        if (cbSucursalOrigen.getSelectedIndex() == -1 || cbSucursalDestino.getSelectedIndex() == -1){
-            javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una sucursal de origen y destino.", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            SucursalDTO dtoOrigen = (SucursalDTO) cbSucursalOrigen.getSelectedItem();
-            SucursalDTO dtoDestino = (SucursalDTO) cbSucursalDestino.getSelectedItem();
-            RutaDTO dto = RutaForm.validarRuta(ftfCapMaxima.getText(), dtoOrigen, dtoDestino, ftfTiempoTransito.getText(), cbEstadoRuta.isSelected());
-            rutaController.addRuta(dto);
-            javax.swing.JOptionPane.showMessageDialog(null, "Ruta creada con éxito", "ÉXITO",
-                    JOptionPane.INFORMATION_MESSAGE);
-            updateRutaTable();
-        } catch (IllegalArgumentException e) {
-            javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void btBuscarRutaActionPerformed(java.awt.event.ActionEvent evt) {
-        if(!ftfIDRuta.getText().isBlank()){
-            List<RutaDTO> aux = new ArrayList<RutaDTO>();
-            aux.add(rutaController.getRutaById(Integer.parseInt(ftfIDRuta.getText())));
-            getTableRuta(aux);
-            return;
-        }
-        if (cbSucursalOrigen.getSelectedIndex() != -1){
-            getTableRuta(rutaController.getRutasBySucursalOrigen((SucursalDTO) cbSucursalOrigen.getSelectedItem()));
-            return;
-        }
-
-        if(!ftfTiempoTransito.getText().isBlank() && !ftfTiempoTransito.getText().equals("00:00")){
-            String[] partes = ftfTiempoTransito.getText().split(":");
-            int horas = Integer.parseInt(partes[0]);
-            int minutos = Integer.parseInt(partes[1]);
-            Duration.ofHours(horas).plusMinutes(minutos);
-
-            getTableRuta(rutaController.getRutasByDuracionViaje(Duration.ofHours(horas).plusMinutes(minutos)));
-            return;
-        }
-
-        if (!ftfCapMaxima.getText().isBlank() && !ftfCapMaxima.getText().equals("0")){
-            getTableRuta(rutaController.getRutasByCapacidadEnKilos(Double.parseDouble(ftfCapMaxima.getText())));
-            return;
-        }
-
-        if (cbEstadoRuta.isSelected()){
-            getTableRuta(rutaController.getRutasByEstado(cbEstadoRuta.isSelected()));
-            return;
-        }
-
-        getTableRuta(rutas);
-    }
-
-    private void btModificarRutaActionPerformed(java.awt.event.ActionEvent evt) {
-        if (tlRuta.getSelectionModel().isSelectionEmpty()){
-            javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una ruta de la tabla para continuar.", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            RutaDTO dto = RutaForm.validarRuta(ftfCapMaxima.getText(), (SucursalDTO) cbSucursalOrigen.getSelectedItem(),
-                    (SucursalDTO) cbSucursalDestino.getSelectedItem(), ftfTiempoTransito.getText(), cbEstadoRuta.isSelected());
-            dto.setId(Integer.parseInt(ftfIDRuta.getText()));
-            rutaController.updateRuta(dto);
-            javax.swing.JOptionPane.showMessageDialog(null, "Ruta modificada con éxito", "ÉXITO",
-                    JOptionPane.INFORMATION_MESSAGE);
-            updateRutaTable();
-        } catch (IllegalArgumentException e) {
-            javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void btEliminarRutaActionPerformed(java.awt.event.ActionEvent evt) {
-        if (tlRuta.getSelectionModel().isSelectionEmpty()){
-            javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una ruta de la tabla para continuar.", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-
-        try {
-            int id = Integer.parseInt(tlRuta.getValueAt(tlRuta.getSelectedRow(), 0).toString());
-            RutaDTO dto = rutas
-                    .stream()
-                    .filter(r -> r.getId().equals(id))
-                    .findFirst()
-                    .orElseThrow();
-            rutaController.deleteRuta(dto);
-            javax.swing.JOptionPane.showMessageDialog(null, "Ruta eliminada con éxito", "ÉXITO",
-                    JOptionPane.INFORMATION_MESSAGE);
-            updateRutaTable();
-        } catch (IllegalArgumentException e) {
-            javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void btLimpiarRutaActionPerformed(java.awt.event.ActionEvent evt) {
-        ftfIDRuta.setText("");
-        ftfTiempoTransito.setText("00:00");
-        ftfCapMaxima.setText("0");
-        cbEstadoRuta.setSelected(false);
-        cbSucursalOrigen.removeAllItems();
-        cbSucursalDestino.removeAllItems();
-        sucursales.forEach(s -> {
-            cbSucursalOrigen.addItem(s);
-            cbSucursalDestino.addItem(s);
-        });
-        cbSucursalOrigen.setSelectedIndex(-1);
-        cbSucursalDestino.setSelectedIndex(-1);
-        updateRutaTable();
-    }
-
     private void getTableRuta(List<RutaDTO> listaDTO) {
 
         DefaultTableModel modelo = new DefaultTableModel() {
@@ -376,8 +341,8 @@ public class RutaGui implements Tab{
 
         String[] columnas = {"ID", "S. Origen", "S. Destino", "Tiempo", "Cap. Maxima", "Operativa"};
         String[] data = new String[columnas.length];
-        for (int i = 0; i < columnas.length; i++) {
-            modelo.addColumn(columnas[i]);
+        for (String columna : columnas) {
+            modelo.addColumn(columna);
         }
 
         if (!(listaDTO == null)) {
@@ -413,29 +378,28 @@ public class RutaGui implements Tab{
             i--;
         }
 
-        tlRuta.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-            public void valueChanged(ListSelectionEvent event) {
-                if (tlRuta.getSelectionModel().isSelectionEmpty())
-                    return;
+        tlRuta.getSelectionModel().addListSelectionListener(event -> {
+            if (tlRuta.getSelectionModel().isSelectionEmpty())
+                return;
 
-                int row = tlRuta.getSelectedRow();
-                ftfIDRuta.setText(tlRuta.getValueAt(row, 0).toString());
-                cbSucursalOrigen.setSelectedItem(
-                        sucursales
-                                .stream()
-                                .filter(s -> s.getNombre().equals(tlRuta.getValueAt(row, 1)))
-                                .findFirst()
-                                .orElseThrow(null));
-                cbSucursalDestino.setSelectedItem(
-                        sucursales
-                                .stream()
-                                .filter(s -> s.getNombre().equals(tlRuta.getValueAt(row, 2)))
-                                .findFirst()
-                                .orElseThrow(null));
-                ftfTiempoTransito.setText(tlRuta.getValueAt(row, 3).toString());
-                ftfCapMaxima.setText(tlRuta.getValueAt(row, 4).toString());
-                cbEstadoRuta.setSelected(tlRuta.getValueAt(row, 5).toString().equalsIgnoreCase("Si"));
-            }});
+            int row = tlRuta.getSelectedRow();
+            ftfIDRuta.setText(tlRuta.getValueAt(row, 0).toString());
+            cbSucursalOrigen.setSelectedItem(
+                    sucursales
+                            .stream()
+                            .filter(s -> s.getNombre().equals(tlRuta.getValueAt(row, 1)))
+                            .findFirst()
+                            .orElseThrow(null));
+            cbSucursalDestino.setSelectedItem(
+                    sucursales
+                            .stream()
+                            .filter(s -> s.getNombre().equals(tlRuta.getValueAt(row, 2)))
+                            .findFirst()
+                            .orElseThrow(null));
+            ftfTiempoTransito.setText(tlRuta.getValueAt(row, 3).toString());
+            ftfCapMaxima.setText(tlRuta.getValueAt(row, 4).toString());
+            cbEstadoRuta.setSelected(tlRuta.getValueAt(row, 5).toString().equalsIgnoreCase("Si"));
+        });
     }
 
     private void updateRutaTable() {
@@ -444,11 +408,6 @@ public class RutaGui implements Tab{
         getTableRuta(rutas);
     }
 
-    private javax.swing.JButton btBuscarRuta;
-    private javax.swing.JButton btCrearRuta;
-    private javax.swing.JButton btEliminarRuta;
-    private javax.swing.JButton btLimpiarRuta;
-    private javax.swing.JButton btModificarRuta;
     private javax.swing.JCheckBox cbEstadoRuta;
     private JComboBox<SucursalDTO> cbSucursalDestino;
     private JComboBox<SucursalDTO> cbSucursalOrigen;
@@ -456,19 +415,12 @@ public class RutaGui implements Tab{
     private javax.swing.JFormattedTextField ftfIDRuta;
     private javax.swing.JFormattedTextField ftfTiempoTransito;
     private javax.swing.JPanel jRutaTab;
-    private javax.swing.JLabel lblCapacidadMaxima;
-    private javax.swing.JLabel lblEstadoRuta;
-    private javax.swing.JLabel lblIDRuta;
-    private javax.swing.JLabel lblSucursalDestino;
-    private javax.swing.JLabel lblSucursalOrigen;
-    private javax.swing.JLabel lblTiempoTransito;
-    private javax.swing.JScrollPane spRuta;
     private javax.swing.JTable tlRuta;
 
-    private RutaController rutaController = new RutaController(EntityManagerUtil.getEntityManager());
+    private final RutaController rutaController = new RutaController(EntityManagerUtil.getEntityManager());
     private List<RutaDTO> rutas = rutaController.getAllRutas();
 
 
     private final SucursalController sucursalController = new SucursalController(EntityManagerUtil.getEntityManager());
-    private List<SucursalDTO> sucursales = sucursalController.getAllSucursales();
+    private final List<SucursalDTO> sucursales = sucursalController.getAllSucursales();
 }

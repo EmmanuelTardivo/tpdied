@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class RecorridoGui {
-    public RecorridoGui(List<RutaDTO> camino){
+    public RecorridoGui(List<RutaDTO> camino) {
         JFrame ventana = new JFrame("Recorrido de camino");
         ventana.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        ventana.setSize(500,500);
+        ventana.setSize(500, 500);
 
         GrafoCanvas canvas = new GrafoCanvas(camino);
         ventana.getContentPane().add(canvas);
@@ -24,6 +24,7 @@ public class RecorridoGui {
         ventana.setVisible(true);
     }
 }
+
 class Node {
     public int x, y, weight, height;
     public String name;
@@ -40,6 +41,7 @@ class Node {
         return new Ellipse2D.Float(this.x, this.y, this.weight, this.height);
     }
 }
+
 class Arista {
     public int x1, y1, x2, y2;
 
@@ -56,11 +58,11 @@ class Arista {
 }
 
 class GrafoCanvas extends Canvas {
-    private List<RutaDTO> camino;
-    private OrdenProvisionManager ordenProvisionManager = new OrdenProvisionManager(EntityManagerUtil.getEntityManager());
+    private final List<RutaDTO> camino;
+    private final OrdenProvisionManager ordenProvisionManager = new OrdenProvisionManager(EntityManagerUtil.getEntityManager());
     private List<String> sucursales;
 
-    public GrafoCanvas (List<RutaDTO> camino){
+    public GrafoCanvas(List<RutaDTO> camino) {
         super();
         this.camino = camino;
     }
@@ -176,11 +178,10 @@ class GrafoCanvas extends Canvas {
     }
 
     private void draw(Node nodo, Graphics2D g2) {
-        if (sucursales.contains(nodo.name.toLowerCase())){
+        if (sucursales.contains(nodo.name.toLowerCase())) {
             g2.setColor((Color.GREEN));
             g2.fill(nodo.getShape());
-        }
-        else{
+        } else {
             g2.setColor(Color.BLUE);
             g2.fill(nodo.getShape());
         }
@@ -189,6 +190,7 @@ class GrafoCanvas extends Canvas {
     public Integer getMedioX(Node n) {
         return n.x + (n.weight / 2);
     }
+
     public Integer getMedioY(Node n) {
         return n.y + (n.height / 2);
     }

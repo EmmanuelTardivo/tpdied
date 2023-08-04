@@ -7,17 +7,15 @@ import com.tpdied.dto.SucursalDTO;
 import com.tpdied.util.EntityManagerUtil;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StockGui implements Tab{
+public class StockGui implements Tab {
 
-    public StockGui(){
+    public StockGui() {
         initComponents();
     }
 
@@ -26,23 +24,23 @@ public class StockGui implements Tab{
         return "Stock";
     }
 
-    public JPanel getTab(){
+    public JPanel getTab() {
         return jStockTab;
     }
 
     private void initComponents() {
         jStockTab = new javax.swing.JPanel();
-        lblSucursalStock = new javax.swing.JLabel();
-        lblProductoStock = new javax.swing.JLabel();
-        lblCantidadStock = new javax.swing.JLabel();
-        btCrearStock = new javax.swing.JButton();
-        btModificarStock = new javax.swing.JButton();
-        btEliminarStock = new javax.swing.JButton();
-        spStock = new javax.swing.JScrollPane();
+        JLabel lblSucursalStock = new JLabel();
+        JLabel lblProductoStock = new JLabel();
+        JLabel lblCantidadStock = new JLabel();
+        JButton btCrearStock = new JButton();
+        JButton btModificarStock = new JButton();
+        JButton btEliminarStock = new JButton();
+        JScrollPane spStock = new JScrollPane();
         tlStockSucursal = new javax.swing.JTable();
-        btLimpiarStock = new javax.swing.JButton();
-        cbSucursalStock = new JComboBox<SucursalDTO>();
-        cbProductoStock = new JComboBox<ProductoDTO>();
+        JButton btLimpiarStock = new JButton();
+        cbSucursalStock = new JComboBox<>();
+        cbProductoStock = new JComboBox<>();
         ftfCantidadStock = new javax.swing.JFormattedTextField();
 
         jStockTab.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 12)); // NOI18N
@@ -62,25 +60,77 @@ public class StockGui implements Tab{
 
         btCrearStock.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btCrearStock.setText("Crear");
-        btCrearStock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btCrearStockActionPerformed(evt);
+        btCrearStock.addActionListener(evt -> {
+            if (cbSucursalStock.getSelectedIndex() == -1) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una sucursal para continuar", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (cbProductoStock.getSelectedIndex() == -1) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar un producto para continuar", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                SucursalDTO sucursalDTO = (SucursalDTO) cbSucursalStock.getSelectedItem();
+                ProductoDTO productoDTO = (ProductoDTO) cbProductoStock.getSelectedItem();
+                sucursalController.setStockProducto(sucursalDTO, productoDTO, Integer.parseInt(ftfCantidadStock.getText()));
+                sucursalDTO.getListaProductoCantidadEnStock().put(productoDTO, Integer.parseInt(ftfCantidadStock.getText()));
+                javax.swing.JOptionPane.showMessageDialog(null, "Stock de Producto creado con éxito", "ÉXITO",
+                        JOptionPane.INFORMATION_MESSAGE);
+                updateProductoStockTable(sucursalDTO);
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
         btModificarStock.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btModificarStock.setText("Modificar");
-        btModificarStock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btModificarStockActionPerformed(evt);
+        btModificarStock.addActionListener(evt -> {
+            if (cbSucursalStock.getSelectedIndex() == -1) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar una sucursal para continuar", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (cbProductoStock.getSelectedIndex() == -1) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar un producto para continuar", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                SucursalDTO sucursalDTO = (SucursalDTO) cbSucursalStock.getSelectedItem();
+                ProductoDTO productoDTO = (ProductoDTO) cbProductoStock.getSelectedItem();
+                sucursalController.setStockProducto(sucursalDTO, productoDTO, Integer.parseInt(ftfCantidadStock.getText()));
+                sucursalDTO.getListaProductoCantidadEnStock().put(productoDTO, Integer.parseInt(ftfCantidadStock.getText()));
+                javax.swing.JOptionPane.showMessageDialog(null, "Stock de Producto modificado con éxito", "ÉXITO",
+                        JOptionPane.INFORMATION_MESSAGE);
+                updateProductoStockTable(sucursalDTO);
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
         btEliminarStock.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btEliminarStock.setText("Eliminar");
-        btEliminarStock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btEliminarStockActionPerformed(evt);
+        btEliminarStock.addActionListener(evt -> {
+            if (tlStockSucursal.getSelectionModel().isSelectionEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar un producto de la tabla para continuar.", "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                SucursalDTO sucursalDTO = (SucursalDTO) cbSucursalStock.getSelectedItem();
+                ProductoDTO productoDTO = (ProductoDTO) cbProductoStock.getSelectedItem();
+                sucursalController.setStockProducto(sucursalDTO, productoDTO, 0);
+                sucursalDTO.getListaProductoCantidadEnStock().put(productoDTO, 0);
+                javax.swing.JOptionPane.showMessageDialog(null, "Stock vaciado con éxito", "ÉXITO",
+                        JOptionPane.INFORMATION_MESSAGE);
+                updateProductoStockTable(sucursalDTO);
+            } catch (IllegalArgumentException e) {
+                javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
+                        JOptionPane.ERROR_MESSAGE);
             }
         });
 
@@ -92,35 +142,37 @@ public class StockGui implements Tab{
 
         btLimpiarStock.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         btLimpiarStock.setText("Limpiar");
-        btLimpiarStock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btLimpiarStockActionPerformed(evt);
-            }
+        btLimpiarStock.addActionListener(evt -> {
+            sucursales = sucursalController.getAllSucursales();
+            cbSucursalStock.removeAllItems();
+            sucursales.forEach(s -> cbSucursalStock.addItem(s));
+            cbSucursalStock.setSelectedIndex(-1);
+            productos = productoController.getAllProductos();
+            cbProductoStock.removeAllItems();
+            productos.forEach(s -> cbProductoStock.addItem(s));
+            cbProductoStock.setSelectedIndex(-1);
+            ftfCantidadStock.setText("0");
+            getTableStockSucursal(null);
         });
 
         cbSucursalStock.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         cbSucursalStock.setToolTipText("");
-        sucursales.forEach(s -> {
-            cbSucursalStock.addItem(s);
-        });
+        sucursales.forEach(s -> cbSucursalStock.addItem(s));
         cbSucursalStock.setSelectedIndex(-1);
 
-        cbSucursalStock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbSucursalStockActionPerformed(evt);
-            }
+        cbSucursalStock.addActionListener(evt -> {
+            if (cbSucursalStock.getSelectedIndex() != -1)
+                updateProductoStockTable((SucursalDTO) cbSucursalStock.getSelectedItem());
         });
 
         cbProductoStock.setFont(new java.awt.Font("Noto Sans", Font.PLAIN, 13)); // NOI18N
         cbProductoStock.setToolTipText("");
-        productos.forEach(s -> {
-            cbProductoStock.addItem(s);
-        });
+        productos.forEach(s -> cbProductoStock.addItem(s));
         cbProductoStock.setSelectedIndex(-1);
-        cbProductoStock.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cbProductoStockActionPerformed(evt);
-            }
+        cbProductoStock.addActionListener(evt -> {
+            ProductoDTO k = ((ProductoDTO) cbProductoStock.getSelectedItem());
+            if (productoStockSucursal.containsKey(k))
+                ftfCantidadStock.setText(productoStockSucursal.get(k).toString());
         });
 
         ftfCantidadStock.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
@@ -187,84 +239,6 @@ public class StockGui implements Tab{
         );
     }
 
-    private void cbSucursalStockActionPerformed(java.awt.event.ActionEvent evt) {
-        if(cbSucursalStock.getSelectedIndex() != -1)
-            updateProductoStockTable((SucursalDTO) cbSucursalStock.getSelectedItem());
-    }
-
-    private void cbProductoStockActionPerformed(java.awt.event.ActionEvent evt) {
-        ProductoDTO k = ((ProductoDTO) cbProductoStock.getSelectedItem());
-        if (productoStockSucursal.containsKey(k))
-            ftfCantidadStock.setText(productoStockSucursal.get(k).toString());
-    }
-
-    private void btCrearStockActionPerformed(java.awt.event.ActionEvent evt) {
-        try {
-            SucursalDTO sucursalDTO = (SucursalDTO) cbSucursalStock.getSelectedItem();
-            ProductoDTO productoDTO = (ProductoDTO) cbProductoStock.getSelectedItem();
-            sucursalController.setStockProducto(sucursalDTO, productoDTO, Integer.parseInt(ftfCantidadStock.getText()));
-            sucursalDTO.getListaProductoCantidadEnStock().put(productoDTO, Integer.parseInt(ftfCantidadStock.getText()));
-            javax.swing.JOptionPane.showMessageDialog(null, "Stock de Producto creado con éxito", "ÉXITO",
-                    JOptionPane.INFORMATION_MESSAGE);
-            updateProductoStockTable(sucursalDTO);
-        } catch (IllegalArgumentException e) {
-            javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void btModificarStockActionPerformed(java.awt.event.ActionEvent evt) {
-        try {
-            SucursalDTO sucursalDTO = (SucursalDTO) cbSucursalStock.getSelectedItem();
-            ProductoDTO productoDTO = (ProductoDTO) cbProductoStock.getSelectedItem();
-            sucursalController.setStockProducto(sucursalDTO, productoDTO, Integer.parseInt(ftfCantidadStock.getText()));
-            sucursalDTO.getListaProductoCantidadEnStock().put(productoDTO, Integer.parseInt(ftfCantidadStock.getText()));
-            javax.swing.JOptionPane.showMessageDialog(null, "Stock de Producto modificado con éxito", "ÉXITO",
-                    JOptionPane.INFORMATION_MESSAGE);
-            updateProductoStockTable(sucursalDTO);
-        } catch (IllegalArgumentException e) {
-            javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
-    private void btLimpiarStockActionPerformed(java.awt.event.ActionEvent evt) {
-        sucursales = sucursalController.getAllSucursales();
-        cbSucursalStock.removeAllItems();
-        sucursales.forEach(s -> {
-            cbSucursalStock.addItem(s);
-        });
-        cbSucursalStock.setSelectedIndex(-1);
-        productos = productoController.getAllProductos();
-        cbProductoStock.removeAllItems();
-        productos.forEach(s -> {
-            cbProductoStock.addItem(s);
-        });
-        cbProductoStock.setSelectedIndex(-1);
-        ftfCantidadStock.setText("0");
-        getTableStockSucursal(null);
-    }
-
-    private void btEliminarStockActionPerformed(java.awt.event.ActionEvent evt) {
-        if (tlStockSucursal.getSelectionModel().isSelectionEmpty()){
-            javax.swing.JOptionPane.showMessageDialog(null, "Debe seleccionar un producto de la tabla para continuar.", "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        try {
-            SucursalDTO sucursalDTO = (SucursalDTO) cbSucursalStock.getSelectedItem();
-            ProductoDTO productoDTO = (ProductoDTO) cbProductoStock.getSelectedItem();
-            sucursalController.setStockProducto(sucursalDTO, productoDTO, 0);
-            sucursalDTO.getListaProductoCantidadEnStock().put(productoDTO, 0);
-            javax.swing.JOptionPane.showMessageDialog(null, "Stock vaciado con éxito", "ÉXITO",
-                    JOptionPane.INFORMATION_MESSAGE);
-            updateProductoStockTable(sucursalDTO);
-        } catch (IllegalArgumentException e) {
-            javax.swing.JOptionPane.showMessageDialog(null, e.getMessage(), "ERROR",
-                    JOptionPane.ERROR_MESSAGE);
-        }
-    }
-
     private void getTableStockSucursal(Map<ProductoDTO, Integer> listaDTO) {
         DefaultTableModel modelo = new DefaultTableModel() {
             @Override
@@ -280,14 +254,14 @@ public class StockGui implements Tab{
 
         String[] columnas = {"ID Producto", "Producto", "Cantidad"};
         String[] data = new String[columnas.length];
-        for (int i = 0; i < columnas.length; i++) {
-            modelo.addColumn(columnas[i]);
+        for (String columna : columnas) {
+            modelo.addColumn(columna);
         }
 
         if (!(listaDTO == null)) {
             try {
                 for (ProductoDTO dto : listaDTO.keySet()) {
-                    if(listaDTO.get(dto) > 0) {
+                    if (listaDTO.get(dto) > 0) {
                         data[0] = dto.getId().toString();
                         data[1] = dto.getNombre();
                         data[2] = listaDTO.get(dto).toString();
@@ -316,20 +290,19 @@ public class StockGui implements Tab{
             i--;
         }
 
-        tlStockSucursal.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-            public void valueChanged(ListSelectionEvent event) {
-                if (tlStockSucursal.getSelectionModel().isSelectionEmpty())
-                    return;
+        tlStockSucursal.getSelectionModel().addListSelectionListener(event -> {
+            if (tlStockSucursal.getSelectionModel().isSelectionEmpty())
+                return;
 
-                int row = tlStockSucursal.getSelectedRow();
-                cbProductoStock.setSelectedItem(
-                        productos
-                                .stream()
-                                .filter(p -> p.getId() == Integer.parseInt(tlStockSucursal.getValueAt(row, 0).toString()))
-                                .findFirst()
-                                .orElseThrow(null));
-                ftfCantidadStock.setText(tlStockSucursal.getValueAt(row, 2).toString());
-            }});
+            int row = tlStockSucursal.getSelectedRow();
+            cbProductoStock.setSelectedItem(
+                    productos
+                            .stream()
+                            .filter(p -> p.getId() == Integer.parseInt(tlStockSucursal.getValueAt(row, 0).toString()))
+                            .findFirst()
+                            .orElseThrow(null));
+            ftfCantidadStock.setText(tlStockSucursal.getValueAt(row, 2).toString());
+        });
     }
 
     private void updateProductoStockTable(SucursalDTO dto) {
@@ -338,18 +311,10 @@ public class StockGui implements Tab{
         getTableStockSucursal(productoStockSucursal);
     }
 
-    private javax.swing.JButton btCrearStock;
-    private javax.swing.JButton btEliminarStock;
-    private javax.swing.JButton btLimpiarStock;
-    private javax.swing.JButton btModificarStock;
     private JComboBox<ProductoDTO> cbProductoStock;
     private JComboBox<SucursalDTO> cbSucursalStock;
     private javax.swing.JFormattedTextField ftfCantidadStock;
     private javax.swing.JPanel jStockTab;
-    private javax.swing.JLabel lblCantidadStock;
-    private javax.swing.JLabel lblProductoStock;
-    private javax.swing.JLabel lblSucursalStock;
-    private javax.swing.JScrollPane spStock;
     private javax.swing.JTable tlStockSucursal;
 
 
@@ -357,7 +322,7 @@ public class StockGui implements Tab{
     private final ProductoController productoController = new ProductoController(EntityManagerUtil.getEntityManager());
     private List<SucursalDTO> sucursales = sucursalController.getAllSucursales();
     private List<ProductoDTO> productos = productoController.getAllProductos();
-    private Map<ProductoDTO, Integer> productoStockSucursal = new HashMap<ProductoDTO, Integer>();
+    private Map<ProductoDTO, Integer> productoStockSucursal = new HashMap<>();
 
 
 }
