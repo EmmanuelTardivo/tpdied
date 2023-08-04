@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.Duration;
-import java.time.LocalTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RutaTest {
@@ -52,10 +51,10 @@ class RutaTest {
         assertEquals(1000.0, ruta.getCapacidadEnKilos(), 0.001);
     }
 
-    /* @Test
+    @Test
     void testGetDuracionViaje() {
-        assertEquals(LocalTime.of(2, 30), ruta.getDuracionViaje());
-    } */
+        assertEquals(Duration.ofHours(2).plusMinutes(30), ruta.getDuracionViaje());
+    }
 
     @Test
     void testGetEstado() {

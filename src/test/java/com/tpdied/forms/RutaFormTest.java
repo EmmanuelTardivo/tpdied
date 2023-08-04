@@ -1,24 +1,23 @@
 package com.tpdied.forms;
 
-import com.google.protobuf.Duration;
 import com.tpdied.dto.RutaDTO;
 import com.tpdied.dto.SucursalDTO;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalTime;
+import java.time.Duration;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RutaFormTest {
 
-    /* @Test
+    @Test
     public void testValidarRutaDatosValidos() {
         // Arrange
         String capacidadEnKilos = "500.0";
         SucursalDTO sucursalOrigen = new SucursalDTO();
-        sucursalOrigen.setId(1);
+        sucursalOrigen.setNombre("S1");
         SucursalDTO sucursalDestino = new SucursalDTO();
-        sucursalDestino.setId(2);
+        sucursalDestino.setNombre("S2");
         String duracionViaje = "04:30";
         Boolean estado = true;
 
@@ -30,9 +29,9 @@ public class RutaFormTest {
         assertEquals(Double.parseDouble(capacidadEnKilos), result.getCapacidadEnKilos());
         assertEquals(sucursalOrigen, result.getSucursalOrigen());
         assertEquals(sucursalDestino, result.getSucursalDestino());
-        assertEquals("PT4H30M", result.getDuracionViaje());
+        assertEquals(Duration.ofHours(4).plusMinutes(30), result.getDuracionViaje());
         assertEquals(estado, result.getEstado());
-    } */
+    }
 
     @Test
     public void testValidarRutaCapacidadEnKilosNula() {

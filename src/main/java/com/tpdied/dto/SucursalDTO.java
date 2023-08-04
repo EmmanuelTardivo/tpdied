@@ -66,10 +66,6 @@ public class SucursalDTO {
         this.estado = estado;
     }
 
-    private String estadoToString() {
-        return estado ? "Operativo" : "No operativo";
-    }
-
     @Override
     public int hashCode() {
         final int prime = 31;
