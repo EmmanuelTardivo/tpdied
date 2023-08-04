@@ -1,6 +1,7 @@
 package com.tpdied.controllers;
 
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,6 +69,10 @@ public class SucursalController {
     public SucursalDTO getSucursalByName(String name) {
         Sucursal sucursal = sucursalDao.getByName(name);
         return sucursal != null ? SucursalMapper.toDto(sucursal) : null;
+    }
+
+    public List<SucursalDTO> getSucursalesByName(String name) {
+        return SucursalMapper.toDto(sucursalDao.getSucursalesByName(name));
     }
 
     /**
@@ -155,6 +160,10 @@ public class SucursalController {
      * @param cantidad    La cantidad de stock a establecer.
      */
     public void setStockProducto(SucursalDTO sucursalDto, ProductoDTO productoDto, Integer cantidad) {
+
+        if(cantidad < 0)
+            throw new IllegalArgumentException("La cantidad de stock debe ser positiva");
+
         Sucursal sucursal = SucursalMapper.toEntity(sucursalDto);
         Producto producto = ProductoMapper.toEntity(productoDto);
         sucursal.updateProductoCantidadEnStock(producto, cantidad);
@@ -170,8 +179,13 @@ public class SucursalController {
      * @return Un mapa que asocia cada producto disponible en la sucursal con su
      *         respectiva cantidad en stock.
      */
-    public Map<Producto, Integer> getStockProductos(SucursalDTO sucursalDto) {
-        return SucursalMapper.toEntity(sucursalDto).getListaProductoCantidadEnStock();
+    public Map<ProductoDTO, Integer> getStockProductos(SucursalDTO sucursalDto) {
+        Map<Producto, Integer> aux = SucursalMapper.toEntity(sucursalDto).getListaProductoCantidadEnStock();
+        Map<ProductoDTO, Integer> rst = new HashMap<ProductoDTO, Integer>();
+        for(Producto p : aux.keySet()){
+            rst.put(ProductoMapper.toDto(p), aux.get(p));
+        }
+        return rst;
     }
 
     /**

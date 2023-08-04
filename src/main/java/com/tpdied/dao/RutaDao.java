@@ -1,6 +1,6 @@
 package com.tpdied.dao;
 
-import java.time.LocalTime;
+import java.time.Duration;
 import java.util.List;
 
 import com.tpdied.models.Ruta;
@@ -30,7 +30,7 @@ public class RutaDao extends AbstractDao<Ruta> {
         return query.getResultList();
     }
 
-    public List<Ruta> getByDuracionViaje(LocalTime duracionViaje) {
+    public List<Ruta> getByDuracionViaje(Duration duracionViaje) {
         String qlString = "SELECT r FROM Ruta r WHERE r.eliminado = false AND r.duracionViaje = :duracionViaje";
         TypedQuery<Ruta> query = getEntityManager().createQuery(qlString, Ruta.class);
         query.setParameter("duracionViaje", duracionViaje);

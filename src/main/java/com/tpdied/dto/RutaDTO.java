@@ -110,13 +110,13 @@ public class RutaDTO {
     public String toString() {
         return "Ruta [id=" + id + ", origen = " + sucursalOrigen.getNombre() + ", destino = "
                 + sucursalDestino.getNombre()
-                + ", capacidadEnKilos=" + capacidadEnKilos + ", duracionViaje=" + formatDuration(duracionViaje) + ", estado="
+                + ", capacidadEnKilos=" + capacidadEnKilos + ", duracionViaje=" + formatDuration() + ", estado="
                 + estadoToString()
                 + "]";
     }
 
-    private static String formatDuration(Duration duration) {
-        long totalMinutes = duration.toMinutes();
+    public String formatDuration() {
+        long totalMinutes = duracionViaje.toMinutes();
         long hours = totalMinutes / 60;
         long minutes = totalMinutes % 60;
 

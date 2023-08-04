@@ -25,8 +25,10 @@ public class RutaForm {
      */
     public static RutaDTO validarRuta(String capacidadEnKilos, SucursalDTO sucursalOrigen, SucursalDTO sucursalDestino,
             String duracionViaje, Boolean estado) {
-        double capacidadDouble = validarCapacidadEnKilos(capacidadEnKilos);
+
+        validarSucursales(sucursalOrigen, sucursalDestino);
         Duration duracionViajeTime = validarDuracionViaje(duracionViaje);
+        double capacidadDouble = validarCapacidadEnKilos(capacidadEnKilos);
 
         RutaDTO result = new RutaDTO();
         result.setCapacidadEnKilos(capacidadDouble);
@@ -37,13 +39,19 @@ public class RutaForm {
         return result;
     }
 
+    private static void validarSucursales(SucursalDTO sucursalOrigen, SucursalDTO sucursalDestino) {
+        if (sucursalOrigen.equals(sucursalDestino))
+            throw new IllegalArgumentException("La sucursal Origen y Destino no puede ser la misma.");
+    }
+
+
     private static double validarCapacidadEnKilos(String capacidadEnKilos) {
         if (capacidadEnKilos == null || capacidadEnKilos.isEmpty()) {
             throw new IllegalArgumentException("La capacidad en kilos no puede ser nula o vacía.");
         }
         try {
             double capacidadDouble = Double.parseDouble(capacidadEnKilos);
-            if (capacidadDouble < 0.0) {
+            if (capacidadDouble <= 0.0) {
                 throw new IllegalArgumentException("La capacidad en kilos debe ser un número positivo mayor a 0.");
             }
             return capacidadDouble;
@@ -53,7 +61,7 @@ public class RutaForm {
     }
 
     private static Duration validarDuracionViaje(String duracionViaje) {
-        if (duracionViaje == null || duracionViaje.trim().isEmpty()) {
+        if (duracionViaje == null || duracionViaje.trim().isEmpty() || duracionViaje.equals("00:00")) {
             throw new IllegalArgumentException("La duración del viaje no puede ser nula o vacía.");
         }
         String[] partes = duracionViaje.split(":");

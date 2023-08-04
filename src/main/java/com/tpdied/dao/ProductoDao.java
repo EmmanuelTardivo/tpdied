@@ -14,10 +14,11 @@ public class ProductoDao extends AbstractDao<Producto>{
         setClase(Producto.class);
     }
 
+    // !!!
     public Producto getByName(String name) {
-        String qlString = "SELECT p FROM Producto p WHERE p.eliminado = false AND p.nombre = :name";
+        String qlString = "SELECT p FROM Producto p WHERE p.eliminado = false AND p.nombre LIKE ?1";
         TypedQuery<Producto> query = getEntityManager().createQuery(qlString, Producto.class);
-        query.setParameter("name", name);
+        query.setParameter(1, "%" + name + "%");
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
@@ -25,10 +26,17 @@ public class ProductoDao extends AbstractDao<Producto>{
         }
     }
 
-    public List<Producto> getByDescripcion(String descripcion) {
-        String qlString = "SELECT p FROM Producto p WHERE p.eliminado = false AND p.descripcion = :descripcion";
+    public List<Producto> getProductosByName(String name) {
+        String qlString = "SELECT p FROM Producto p WHERE p.eliminado = false AND p.nombre LIKE ?1";
         TypedQuery<Producto> query = getEntityManager().createQuery(qlString, Producto.class);
-        query.setParameter("descripcion", descripcion);
+        query.setParameter(1, "%" + name + "%");
+        return query.getResultList();
+    }
+
+    public List<Producto> getByDescripcion(String descripcion) {
+        String qlString = "SELECT p FROM Producto p WHERE p.eliminado = false AND p.descripcion LIKE ?1";
+        TypedQuery<Producto> query = getEntityManager().createQuery(qlString, Producto.class);
+        query.setParameter(1, "%" + descripcion + "%");
         return query.getResultList();
     }
 

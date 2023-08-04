@@ -97,7 +97,6 @@ public class SucursalDTO {
 
     @Override
     public String toString() {
-        return "SucursalDTO [id=" + id + ", horaApertura=" + horaApertura + ", horaCierre=" + horaCierre + ", nombre="
-                + nombre + ", estado=" + estadoToString() + "]";
+        return nombre;
     }
 }

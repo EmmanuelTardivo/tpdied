@@ -126,7 +126,7 @@ public class Sucursal implements Eliminable {
     }
 
     public void updateProductoCantidadEnStock(Producto p, Integer cant) {
-        listaProductoCantidadEnStock.putIfAbsent(p, cant);
+        listaProductoCantidadEnStock.put(p, cant);
     }
 
     public Optional<Integer> getCantidadProductoEnStock(Producto p) {

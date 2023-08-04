@@ -54,7 +54,7 @@ public class ProductoForm {
 
         try {
             double pesoDouble = Double.parseDouble(peso);
-            if (pesoDouble < 0.0) {
+            if (pesoDouble <= 0.0) {
                 throw new IllegalArgumentException("El peso debe ser un número positivo mayor a 0.");
             }
             return pesoDouble;
@@ -70,7 +70,7 @@ public class ProductoForm {
 
         try {
             double precioDouble = Double.parseDouble(precio);
-            if (precioDouble < 0.0) {
+            if (precioDouble <= 0.0) {
                 throw new IllegalArgumentException("El precio debe ser un número positivo mayor a 0.");
             }
             return precioDouble;

@@ -75,8 +75,7 @@ public class ProductoDTO {
 
     @Override
     public String toString() {
-        return "Producto [id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", precio=" + precio
-                + ", peso=" + peso + "]";
+        return nombre;
     }
 
 }

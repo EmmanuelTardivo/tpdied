@@ -17,14 +17,21 @@ public class SucursalDao extends AbstractDao <Sucursal>{
     }
     
     public Sucursal getByName(String name) {
-        String qlString = "SELECT s FROM Sucursal s WHERE s.eliminado = false AND s.nombre = :name";
+        String qlString = "SELECT s FROM Sucursal s WHERE s.eliminado = false AND s.nombre LIKE ?1";
         TypedQuery<Sucursal> query = getEntityManager().createQuery(qlString, Sucursal.class);
-        query.setParameter("name", name);
+        query.setParameter(1, "%"+name+"%");
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
+    }
+
+    public List<Sucursal> getSucursalesByName(String name) {
+        String qlString = "SELECT s FROM Sucursal s WHERE s.eliminado = false AND s.nombre LIKE ?1";
+        TypedQuery<Sucursal> query = getEntityManager().createQuery(qlString, Sucursal.class);
+        query.setParameter(1, "%"+name+"%");
+        return query.getResultList();
     }
 
     public List<Sucursal> getByHorarioApertura(LocalTime horarioApertura) {
