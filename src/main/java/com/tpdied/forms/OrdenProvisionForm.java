@@ -41,7 +41,7 @@ public class OrdenProvisionForm {
     }
 
     private static Duration validarLimiteTiempo(String limiteTiempo) {
-        if (limiteTiempo == null || limiteTiempo.trim().isEmpty()) {
+        if (limiteTiempo == null || limiteTiempo.trim().isEmpty() || limiteTiempo.equals("00:00")) {
             throw new IllegalArgumentException("El límite de tiempo no puede ser nulo o vacío.");
         }
 

@@ -14,11 +14,10 @@ public class ProductoDao extends AbstractDao<Producto>{
         setClase(Producto.class);
     }
 
-    // !!!
     public Producto getByName(String name) {
-        String qlString = "SELECT p FROM Producto p WHERE p.eliminado = false AND p.nombre LIKE ?1";
+        String qlString = "SELECT p FROM Producto p WHERE p.eliminado = false AND p.nombre = :name";
         TypedQuery<Producto> query = getEntityManager().createQuery(qlString, Producto.class);
-        query.setParameter(1, "%" + name + "%");
+        query.setParameter("name", name);
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {

@@ -2,6 +2,7 @@
 package com.tpdied.controllers;
 
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.List;
 
 import com.tpdied.dao.RutaDao;
@@ -42,6 +43,10 @@ public class RutaController {
     }
 
     public List<RutaDTO> getRutasByDuracionViaje(Duration duracionViaje) {
+        return RutaMapper.toDto(rutaDao.getByDuracionViaje(duracionViaje));
+    }
+
+    public List<RutaDTO> getRutasByDuracionViaje(LocalTime duracionViaje) {
         return RutaMapper.toDto(rutaDao.getByDuracionViaje(duracionViaje));
     }
 

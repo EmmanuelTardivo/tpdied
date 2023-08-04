@@ -17,9 +17,9 @@ public class SucursalDao extends AbstractDao <Sucursal>{
     }
     
     public Sucursal getByName(String name) {
-        String qlString = "SELECT s FROM Sucursal s WHERE s.eliminado = false AND s.nombre LIKE ?1";
+        String qlString = "SELECT s FROM Sucursal s WHERE s.eliminado = false AND s.nombre = :name";
         TypedQuery<Sucursal> query = getEntityManager().createQuery(qlString, Sucursal.class);
-        query.setParameter(1, "%"+name+"%");
+        query.setParameter("name", name);
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {

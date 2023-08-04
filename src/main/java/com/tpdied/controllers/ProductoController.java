@@ -26,7 +26,6 @@ public class ProductoController {
         return producto != null ? ProductoMapper.toDto(producto) : null;
     }
 
-    // !!!
     public ProductoDTO getProductoByName(String name) {
         Producto producto = productoDao.getByName(name);
         return producto != null ? ProductoMapper.toDto(producto) : null;
